@@ -6,20 +6,23 @@ Apptainer (formerly known as Singularity) is a powerful containerization tool ta
 
 Containers encapsulate software environments, including libraries, dependencies, and the application itself, ensuring reproducibility and ease of deployment. This is especially valuable in bioinformatics, where software dependencies can be complex and challenging to manage.
 
-
-Even so Apptainer is available for all major operating systems the installation on Windows and Mac is not as straight forward as on a (pure) Linux system. Therefore we will run this course from within an Apptainer image. The imagge can be installed on any Apptainer capable system and allows to build an image as a normal user.
+Although Apptainer is available for all major operating systems, the installation process on Windows and Mac is not as straightforward as on a pure Linux system. Therefore, we will run this course using an Apptainer image. This image can be installed on any system that supports Apptainer and allows you to build an image as a regular user.
 
 ## Building Apptainer images for COSMOS-SENSE on open COSMOS
 
-For this workshop we will use the open COSMOS system to build our Apptainer images.
-For that you need ([to download](https://www.cendio.com/thinlinc/download/)) Thinlink and log into open COSMOS at cosmos-dt.lunarc.lu.se.
+For this workshop, we will use the open COSMOS system to build our Apptainer images.
+To do this, you'll need to [download](https://www.cendio.com/thinlinc/download/)) Thinlink and log into open COSMOS at cosmos-dt.lunarc.lu.se.
 
-The module can be loaded using 
+You can load the necessary module with the following command:
 
-* module load ImageSmith/1.0
+```bash
+module load ImageSmith/1.0
+```
 
-But as we are responsible Bioinformaticians we will not start the image like that, but run it on the compute nodes instead:
+However, as responsible bioinformaticians, we will not run the image directly on our frontend systems. Instead, we will execute it on the compute nodes:
 
+
+To do this, copy the following into a file named ``RunImageSmith.sbatch``:
 ```text
 #!/bin/bash
 #SBATCH --ntasks-per-node 1
@@ -35,16 +38,18 @@ ml ImageSmith/1.0
 exit 0
 ```
 
-Copy this into a file called ``RunImageSmith.sbatch`` and start the system with
-*sbatch RunImageSmith.sbatch
+Then start the image with:
+```bash
+sbatch RunImageSmith.sbatch
+```
 
-But I am sure that is clear to all of you!
+After submission, you will receive the PID of the SLURM job. To view the process output, you can use:
 
-You will get the PID of the slurm job when the submission is finished. In the stdout of the process you will find the web link you can reach the image under:
-
-*watch cat *<PID>*
-
-```text
+```bash
+watch cat <PID>
+```
+In the output, you will find a web link to access the image. Look for lines similar to:
+```bash
 ...
 
 [C 2024-09-16 10:33:26.138 ServerApp]
@@ -57,95 +62,98 @@ You will get the PID of the slurm job when the submission is finished. In the st
 ...
 ```
 
-Use the web links - not the file!
-
-In the Jupyter lab web page you can open a 'Terminal' - that is all we need to build an image.
+Use one of these URLs to access the image in your browser.
+In the Jupyter lab web page, you can open a 'Terminal' - that is all we need to build an image.
 
 
 ## Desining your own Apptainer HPC Image
 
-Right from the start you should think about which way you want to interact with the image:
+Right from the start you should consider how you want to interact with the image:
 
     1. Command line tools only
     2. Interactive software
     3. A server started in the image
 
-I assume most of you use interactive sessions based on R or Python for your daily work.
-In that case I recommend to also install Jupyter lab as (as you see here) this interface gives you a lot of possibilities to interact with your software.
+If you primarily use interactive sessions based on R or Python for your daily work,
+I recommend installing Jupyter lab as well. This interface provides numerous possibilities for interacting with your software.
 
-What we need in a minimal configuration is therefore: Python with Jupyter lab, R and the R-Jupyter integration.
-The next question is which operating system do you need? And that is defined by the software tools you want to use.
-As Linux is likely the systemn you need for Bioinformatics we will focus on Linux.
+For a minimal configuration, we need the following:
 
-I have become horribly lacy - ask ChatGPT:
+- Python with JupyterLab
+- R
+- R-Jupyter integration
+
+This allows for interaction with command line tools as well as interactive usage of Python and R packages.
+
+Unfortunately due to Apptainer internals we are restricted to build the same system as the ImageSmith is based on. So we need to stick with alpine:latest for now.
+
+Here’s how you can obtain a minimal Apptainer definition file for this setup:
 
 ```text
-Hi Chatty - can you give me a minimal Apptainer def file that build this minimal system:
-What we need in a minimal configuration is therefore: Python with Jupyter lab, R and the R-Jupyter integration.
-Base it on Unbutu latest - please.
+Hi Chatty - can you give me a minimal Apptainer def file that builds this minimal system:
+What we need in a minimal configuration is therefore: Python with JupyterLab, R, and the R-Jupyter integration.
+Base it on Apline latest - please.
 ```
 
-I got:
+You will probably not get there from the start, but if you are critical and look for small things like ``From alpine:latest``. It is helpful to use the free GPT-4o for that.
+
 
 ```text
 
-# Apptainer definition file for Python, JupyterLab, and R
-BootStrap: docker
-From: ubuntu:latest
+# This is an Apptainer definition file for creating a container
+# based on Alpine Linux with Python, JupyterLab, R, and R-Jupyter integration.
 
-%post
-    # Update and install basic dependencies
-    apt-get update && apt-get install -y \
-        wget \
-        curl \
-        build-essential \
-        libssl-dev \
-        libcurl4-openssl-dev \
-        libxml2-dev \
-        software-properties-common \
-        dirmngr \
-        gnupg2 \
-        locales
-
-    # Set locale to UTF-8
-    locale-gen en_US.UTF-8
-    update-locale LANG=en_US.UTF-8
-
-    # Install Python and JupyterLab
-    apt-get install -y python3 python3-pip python3-dev
-    pip3 install --upgrade pip
-    pip3 install jupyterlab
-
-    # Install R and dependencies
-    apt-get install -y r-base r-base-dev
-
-    # Install R-Jupyter integration (IRKernel)
-    R -e "install.packages('IRkernel', repos='https://cloud.r-project.org/')"
-    R -e "IRkernel::installspec(user = FALSE)"  # Register R kernel with Jupyter
-
-    # Clean up
-    apt-get clean
-    rm -rf /var/lib/apt/lists/*
-
-%environment
-    # Set environment variables
-    export LC_ALL=C.UTF-8
-    export LANG=C.UTF-8
-    export PYTHONNOUSERSITE="true"
-
-%runscript
-    # Default command to run when the container starts
-    jupyter lab --no-browser --ip=0.0.0.0 --allow-root
-
-%labels
-    Maintainer ChatGPT
-    Version 1.0
+Bootstrap: docker
+From: alpine:latest  # Use the latest Alpine Linux image as the base
 
 %help
-    This Apptainer container includes:
-    - Python with JupyterLab
-    - R with Jupyter integration (IRKernel)
-    - Based on Ubuntu latest
+    This container provides a minimal environment with:
+    - Python (with JupyterLab)
+    - R
+    - R-Jupyter integration
+    Based on Alpine Linux.
+
+%post
+    # Update the package index and install essential packages
+    apk update
+
+    # Install build tools and libraries required for Python and R
+    apk add --no-cache bash \
+        build-base \
+        zeromq-dev \
+        libffi-dev \
+        musl-dev \
+        openblas-dev \
+        R \
+        R-dev \
+        R-doc \
+        python3 \
+        py3-pip \
+        python3-dev \
+        py3-setuptools \
+        py3-wheel 
+
+    # Allow pip to modify system-wide packages
+    export PIP_BREAK_SYSTEM_PACKAGES=1
+
+    # Install JupyterLab using pip
+    pip3 install --no-cache-dir jupyterlab
+
+    # Install R packages for Jupyter integration
+    R -e "install.packages(c('IRkernel', 'IRdisplay'), repos='https://cloud.r-project.org/')"
+
+    # Set up IRkernel to make R available as a Jupyter kernel
+    R -e "IRkernel::installspec(user = FALSE)"
+
+%environment
+    # Ensure /usr/local/bin is in the PATH so JupyterLab can be found
+    export PATH="/usr/local/bin:$PATH"
+    # if you want to install more python packages in the sandbox:
+    export PIP_BREAK_SYSTEM_PACKAGES=1
+
+%runscript
+    # By default, run JupyterLab when the container starts
+    jupyter lab --port 9734 --ip=0.0.0.0 --allow-root --no-browser
 
 ```
 
@@ -154,27 +162,29 @@ Let's go back to the ImageSmith - create a new directory:
 ```sh
 mkdir mkdir Singularity_Workshop
 cd Singularity_Workshop
-vi Singullarity_Workshop.def
 ```
 
-Highlight the definition file above and paste it into your vi editor using the middle mouse button.
-Close the vim editor using ":x".
+Jupyter lab also has an option to create a new folder: in the upper left corner the third icon in the second row.
 
-Great we have our forst definition of a Apptainer image. But before we build it - [let's look into the definition file, what does all of that do](./InDetailDefFile.md)?
+To create the definition file you can cd into the created folder or use Jupyter lab to navigate into that folder. On the command line only the vi editor is installed:
+
+```bash
+vi Singularity_Workshop.def
+```
+Paste the copied text with the middle mouse button and close a and save the vi session with ``:x``.
+
+Using the Jupyter lab interface you can also create a new file in the folder using the large plus sign benethe the create folder icon. You can the select Other -> Text file copy in the text and save as  "Singularity_Workshop.def".
+
+
+Great we have our first definition of a Apptainer image. Let's build that:
+```bash
+apptainer build --sandbox Singularity_Workshop Singularity_Workshop.def
+```
+
+That is the bare bone of image creation.
+
+But [how do we add this Apptainer image as a COSMOS-SENSE module](HowToSetUpAModule.md)?
 
 
 
 
-## Commands
-
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
-
-## Project layout
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
