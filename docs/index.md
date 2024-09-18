@@ -11,7 +11,7 @@ Although Apptainer is available for all major operating systems, the installatio
 ## Building Apptainer images for COSMOS-SENSE on open COSMOS
 
 For this workshop, we will use the open COSMOS system to build our Apptainer images.
-To do this, you'll need to [download](https://www.cendio.com/thinlinc/download/)) Thinlink and log into open COSMOS at cosmos-dt.lunarc.lu.se.
+To do this, you'll need to [download](https://www.cendio.com/thinlinc/download/) Thinlink and log into open COSMOS at cosmos-dt.lunarc.lu.se.
 
 You can load the necessary module with the following command:
 
@@ -95,9 +95,10 @@ What we need in a minimal configuration is therefore: Python with JupyterLab, R,
 Base it on Apline latest - please.
 ```
 
-You will probably not get there from the start, but if you are critical and look for small things like ``From alpine:latest``. It is helpful to use the free GPT-4o for that.
+You will probably not get there from the start, but if you are critical and look for small things like ``From alpine:latest`` you can force Chatty to improve. If nothing else it is a first start. It is helpful to use the free GPT-4o for that.
 
 
+My **modified** ChatGPT output:
 ```text
 
 # This is an Apptainer definition file for creating a container
@@ -158,7 +159,7 @@ From: alpine:latest  # Use the latest Alpine Linux image as the base
 ```
 
 Let's go back to the ImageSmith - create a new directory:
-
+ 
 ```sh
 mkdir mkdir Singularity_Workshop
 cd Singularity_Workshop
