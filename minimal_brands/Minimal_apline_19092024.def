@@ -1,0 +1,56 @@
+Bootstrap: docker
+From: alpine:latest
+
+%environment
+    # Set up environment variables
+    export PATH=/usr/local/bin:$PATH
+    export PYTHONUSERBASE=/usr/local
+    export PYTHONNOUSERSITE=1
+    export PIP_BREAK_SYSTEM_PACKAGES=1   # Allow pip to modify system packages
+
+%post
+    # Update and install dependencies
+    apk update && apk add --no-cache \
+        python3 \
+        python3-dev \
+        py3-pip \
+        build-base \
+        libxml2-dev \
+        libxt-dev \
+        bash \
+        openblas-dev \
+        gfortran \
+        pango-dev \
+        tiff-dev \
+        jpeg-dev \
+        cairo-dev \
+        libcurl \
+        curl-dev \
+        git \
+        linux-headers \
+        musl-dev \
+        zeromq-dev \
+        curl
+
+    export PATH=/usr/local/bin:$PATH
+    export PYTHONUSERBASE=/usr/local
+    export PYTHONNOUSERSITE=1
+    export PIP_BREAK_SYSTEM_PACKAGES=1   # Allow pip to modify system packages
+    
+    # Install JupyterLab
+    pip3 install --upgrade pip
+    pip3 install jupyterlab
+
+    # Install R and R dependencies
+    apk add --no-cache R R-dev
+
+    # Install R's IRkernel for Jupyter
+    R -e "install.packages('IRkernel', repos='https://cloud.r-project.org')"
+    R -e "IRkernel::installspec(user = FALSE)"  # Register IRkernel with Jupyter
+
+    # Clean up
+    apk del build-base gfortran musl-dev curl
+    rm -rf /var/cache/apk/* /root/.cache
+
+%runscript
+    exec jupyter lab --no-browser --ip=0.0.0.0 --allow-root
