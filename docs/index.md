@@ -84,9 +84,7 @@ When designing your Apptainer HPC image, consider how you want to interact with 
 
 3. **Interactive Software**  
    If you primarily use interactive sessions based on R or Python, I recommend installing JupyterLab. This provides numerous possibilities for interacting with your software like Terminal access, console access to R and Python, and also Jupter notebooks for R and Python.
-
-
-I recommand to create a script that handles the apptainer loading (incluiding all binds and other options) and make that script available as a command if you load the Lua module. We will not cover this version hgere, but you can look into my [Rustody_image github Repo](https://github.com/stela2502/Rustody_image) if you are interested.    
+ 
 
 ## Minimal Configuration
 
