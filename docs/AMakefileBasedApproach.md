@@ -13,6 +13,7 @@ The ImageSmith has my implementation of that idea installed as ascript:
 
 This will create a folder and populate it with a Makefile, a default definition file and three scripts; ``shell.sh``, ``run.sh`` and ``generate_module.sh``. 
 
+The Makefile is the central organizer of this whole package. The ``generate_module.sh`` defines the structure of the Lua module with the module name and version comping from the Makefile. The two other scripts are mainly designed to interact with the image on your development computer and are not touched in the deploy step.
 
 ## Makefile Options Explained
 
@@ -45,7 +46,7 @@ make -C <new_directory_name>
 ```
 
 This will create the sandbox, build the image, and deploy the module to a path in your home folder. The deploy step is tailored to my development environment where I mount the COSMOS-SENS shared folder in ~/sens05_shared/. When you also do that you can deploy the image directly to COMSOS_SENS.
-At the moment this will create the whole (local) folder and place the module there.
+On open COSMOS we can not mount COSMOS-SENS and the deploy will create the whole (local) folder and place the module there.
 This module will work as is if you copy it to COSMOS-SENS by hand.
 
 ### Test the module on open COSMOS
@@ -105,6 +106,14 @@ If you have modified the Lua definition file and now want to copy the image to C
 make deploy
 ``` 
 
+### Deploy on COSMOS-SENS
 
+I recommend you to upload you image definitions to GitHub (do not upload the image and the sandbox (exclude them in the .gitignore).
+Install apptainer on you developmen machine (desktop), pull your image definition and deploy your image from there to COSMOS-Sens.
+
+If you can not do that you can simply copy the Lua definition file and the Apptainer image file to the respective folder on COSMOS-SENS.
+```bash
+/scale/gr01/shared/common/
+```
 
 Thank you for participating in this workshop! I hope you found it useful, and I appreciate your involvement.

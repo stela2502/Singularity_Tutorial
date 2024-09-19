@@ -65,6 +65,6 @@ execute{cmd="singularity run -B/scale,/sw ".. base.. "/Singularity_Workshop_v1.0
 ```
 We need to copy the image to ``/scale/gr01/shared/common/software/Singularity_Workshop/1.0/Singularity_Workshop_v1.0.sif``.
 
-Of cause that module name will not be available for all of you due to user access rights restrictions on our shared folders.
+Of cause **this module name** will not be available for all of you due to user access rights restrictions on our shared folders.
 
-In other words, you will need to rename your module. I often forget to change the module name or version in one or more places (an apptainer call or anywhere in the module). To simplify this whole process, I have transitioned from executing commands in the terminal to using[a Makefile based approach](AMakefileBasedApproach.md).
+In other words, you will need to rename your module. I often forget to change the module name or version in one or more places (in an apptainer call or anywhere in the Lua module). And therfore I have simplified this whole process: I have transitioned from executing commands in the terminal to using[a Makefile based approach](AMakefileBasedApproach.md).

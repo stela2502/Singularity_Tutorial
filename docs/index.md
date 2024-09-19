@@ -192,7 +192,7 @@ Paste the copied text with the middle mouse button and save & close vi session w
 
 Using the Jupyter lab interface you can also create a new file in the folder using the large plus sign benethe the create folder icon. You can then select Other -> Text file in the main window and copy the text into the new file; save it as "Singularity_Workshop.def".
 
-### Build a Apptainer sandbox
+### Build an Apptainer sandbox
 
 To build that sandbox for manual modification we can run this command:
 ```bash
@@ -233,6 +233,8 @@ apptainer shell --writable Singularity_Workshop
 
 Install the software you need and do not forget to add all working install steps to the def file, too.
 This way all later builds will already have your modifications in it!
+
+### Build the Apptainer image
 
 Finally we build the image with:
 ```bash
