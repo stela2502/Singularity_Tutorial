@@ -129,8 +129,8 @@ family(&quot;images&quot;)
 execute{cmd=&quot;singularity run -B/scale,/sw &quot;.. base.. &quot;/Singularity_Workshop_v1.0.sif&quot;, modeA={&quot;load&quot;} }
 </code></pre>
 <p>We need to copy the image to <code>/scale/gr01/shared/common/software/Singularity_Workshop/1.0/Singularity_Workshop_v1.0.sif</code>.</p>
-<p>Of cause that module name will not be available for all of you due to user access rights restrictions on our shared folders.</p>
-<p>In other words, you will need to rename your module. I often forget to change the module name or version in one or more places (an apptainer call or anywhere in the module). To simplify this whole process, I have transitioned from executing commands in the terminal to using<a href="../AMakefileBasedApproach/">a Makefile based approach</a>.</p>
+<p>Of cause <strong>this module name</strong> will not be available for all of you due to user access rights restrictions on our shared folders.</p>
+<p>In other words, you will need to rename your module. I often forget to change the module name or version in one or more places (in an apptainer call or anywhere in the Lua module). And therfore I have simplified this whole process: I have transitioned from executing commands in the terminal to using<a href="../AMakefileBasedApproach/">a Makefile based approach</a>.</p>
               
             </div>
           </div><footer>

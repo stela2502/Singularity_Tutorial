@@ -230,7 +230,7 @@ cd Singularity_Workshop
 </code></pre>
 <p>Paste the copied text with the middle mouse button and save &amp; close vi session with <code>:x</code>.</p>
 <p>Using the Jupyter lab interface you can also create a new file in the folder using the large plus sign benethe the create folder icon. You can then select Other -&gt; Text file in the main window and copy the text into the new file; save it as "Singularity_Workshop.def".</p>
-<h3 id="build-a-apptainer-sandbox">Build a Apptainer sandbox</h3>
+<h3 id="build-an-apptainer-sandbox">Build an Apptainer sandbox</h3>
 <p>To build that sandbox for manual modification we can run this command:</p>
 <pre><code class="language-bash">apptainer build --sandbox Singularity_Workshop Singularity_Workshop.def
 </code></pre>
@@ -260,6 +260,7 @@ apptainer shell --writable Singularity_Workshop
 </code></pre>
 <p>Install the software you need and do not forget to add all working install steps to the def file, too.
 This way all later builds will already have your modifications in it!</p>
+<h3 id="build-the-apptainer-image">Build the Apptainer image</h3>
 <p>Finally we build the image with:</p>
 <pre><code class="language-bash">apptainer build Singularity_Workshop.sif Singularity_Workshop
 </code></pre>
@@ -316,5 +317,5 @@ This way all later builds will already have your modifications in it!</p>
 
 <!--
 MkDocs version : 1.6.1
-Build Date UTC : 2024-09-19 11:20:24.250095+00:00
+Build Date UTC : 2024-09-19 11:42:28.754376+00:00
 -->

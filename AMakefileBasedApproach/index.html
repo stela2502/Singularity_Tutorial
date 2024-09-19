@@ -56,6 +56,8 @@
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#test-the-module-on-open-cosmos">Test the module on open COSMOS</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#deploy-on-cosmos-sens">Deploy on COSMOS-SENS</a>
+    </li>
         </ul>
     </li>
     </ul>
@@ -91,6 +93,7 @@
 <pre><code class="language-bash">/opt/ImageSmith/create_new_image_builder.sh &lt;new_directory_name&gt;
 </code></pre>
 <p>This will create a folder and populate it with a Makefile, a default definition file and three scripts; <code>shell.sh</code>, <code>run.sh</code> and <code>generate_module.sh</code>. </p>
+<p>The Makefile is the central organizer of this whole package. The <code>generate_module.sh</code> defines the structure of the Lua module with the module name and version comping from the Makefile. The two other scripts are mainly designed to interact with the image on your development computer and are not touched in the deploy step.</p>
 <h2 id="makefile-options-explained">Makefile Options Explained</h2>
 <ol>
 <li>
@@ -123,7 +126,7 @@
 <pre><code class="language-bash">make -C &lt;new_directory_name&gt;
 </code></pre>
 <p>This will create the sandbox, build the image, and deploy the module to a path in your home folder. The deploy step is tailored to my development environment where I mount the COSMOS-SENS shared folder in ~/sens05_shared/. When you also do that you can deploy the image directly to COMSOS_SENS.
-At the moment this will create the whole (local) folder and place the module there.
+On open COSMOS we can not mount COSMOS-SENS and the deploy will create the whole (local) folder and place the module there.
 This module will work as is if you copy it to COSMOS-SENS by hand.</p>
 <h3 id="test-the-module-on-open-cosmos">Test the module on open COSMOS</h3>
 <p>The first test should be if you can load it directly using apptainer:</p>
@@ -162,6 +165,12 @@ exit 0
 </code></pre>
 <p>If you have modified the Lua definition file and now want to copy the image to COSMOS-SENS the easiest is to remove the <code>~/sens01_shared/common</code> folder and re-deploy the module:</p>
 <pre><code class="language-bash">make deploy
+</code></pre>
+<h3 id="deploy-on-cosmos-sens">Deploy on COSMOS-SENS</h3>
+<p>I recommend you to upload you image definitions to GitHub (do not upload the image and the sandbox (exclude them in the .gitignore).
+Install apptainer on you developmen machine (desktop), pull your image definition and deploy your image from there to COSMOS-Sens.</p>
+<p>If you can not do that you can simply copy the Lua definition file and the Apptainer image file to the respective folder on COSMOS-SENS.</p>
+<pre><code class="language-bash">/scale/gr01/shared/common/
 </code></pre>
 <p>Thank you for participating in this workshop! I hope you found it useful, and I appreciate your involvement.</p>
               
