@@ -5,8 +5,78 @@
 Apptainer (formerly known as Singularity) is a powerful containerization tool tailored for scientific and high-performance computing (HPC) environments. Unlike other containerization platforms like Docker, Apptainer is designed with security in mind, allowing users to run containers without needing elevated privileges. This makes it an excellent choice for bioinformaticians working on shared or secure systems.
 
 Containers encapsulate software environments, including libraries, dependencies, and the application itself, ensuring reproducibility and ease of deployment. This is especially valuable in bioinformatics, where software dependencies can be complex and challenging to manage.
+Remember when R 4.4 was deamed unsave and automatically updated - destroying your previous workflow? If you had your Apptainer based workflow then you could still use the 'unsave' R 4.4 workflow.
+And in addition Apptainer provides a way to bundle the tools and packages you need for your analysis in one place, install them on COSMOS-SENS without the help of anybody else and use the same software both on your development machine as well as on COSMOS-SENS.
 
 Although Apptainer is available for all major operating systems, the installation process on Windows and Mac is not as straightforward as on a pure Linux system. Therefore, we will run this course using an Apptainer image. This image can be installed on any system that supports Apptainer and allows you to build an image as a regular user.
+
+## Building Apptainer images on your developmental machine
+
+We will not do that here. But you can of casue install Apptainer on your computer.
+Wou will have either a Windows machine or a Mac and will need super user rights. 
+That will likely be a problem for you if LU manages your computer. Anyhow - if you have super user right on your computer you can install Apptainer and then do this to create a minimal apline linux system image:
+
+1. Create a minmal defintion file
+
+    Save this text in a definition file like "MyPackage.def".
+```text
+# Which operating system should be used as a bassis for this image
+bootstrap: docker
+From: alpine:latest
+
+%post
+    # Update the package index and install essential packages
+    # The commands here are the same as you would use inside the system to install ppackaged if you are root
+    apk update
+
+    # Install build tools and libraries required for Python and R
+    # You must not have comments after the '\' in the following lines!
+    # E.g. ChattGPT likes to add them.
+    apk add --no-cache bash \
+        build-base \
+        zeromq-dev \
+        libffi-dev \
+        musl-dev \
+        openblas-dev \
+        R \
+        R-dev \
+        R-doc \
+        python3 \
+        py3-pip \
+        python3-dev \
+        py3-setuptools \
+        py3-wheel 
+
+    # Allow pip to modify system-wide packages
+    export PIP_BREAK_SYSTEM_PACKAGES=1
+
+    # Install JupyterLab using pip
+    pip3 install --no-cache-dir jupyterlab
+
+%environment
+    # Ensure /usr/local/bin is in the PATH so JupyterLab can be found
+    export PATH="/usr/local/bin:$PATH"
+    # if you want to install more python packages in the sandbox:
+    export PIP_BREAK_SYSTEM_PACKAGES=1
+
+%runscript
+    # By default, run JupyterLab when the container starts
+    jupyter lab --port 9734 --ip=0.0.0.0 --allow-root --no-browser
+```
+2. Build the image
+    Special focus on the sudo here:
+```bash
+sudo apptainer build MyPackage.sif MyPackage.def
+```
+3. Start the image
+```bash
+apptainer run MyPackage.sif
+```
+
+But as I meantioned before most of you might not have super user rights on your own computer.
+Therefore we are using the open COSMOS system to build the images for thsi workshop.
+
+You might argue that you do not have super user right there either, but at least apptainer is installed and we have come up with a way to use an apptainer image to build apptainer images.
 
 ## Building Apptainer images for COSMOS-SENSE on open COSMOS
 
