@@ -13,7 +13,12 @@ Although Apptainer is available for all major operating systems, the installatio
 For this workshop, we will use the open COSMOS system to build our Apptainer images.
 To do this, you'll need to [download](https://www.cendio.com/thinlinc/download/) Thinlink and log into open COSMOS at cosmos-dt.lunarc.lu.se.
 
-You can load the necessary module with the following command:
+Building an apptainer image does need superuser rights or at least some elevated rights on the system.
+In other words you can not build an Apptainer image on an HPC platform - even if the platform does support Singulatrity/Apptainer.
+To fix this we deveoped an Apptainer image that has apptainer installed inside: [ImageSmith](https://github.com/stela2502/ImageSmith).
+
+This image is based on Apline linux as it produces quite slim images and it is installed as a module on COSMOS.
+You can load this module with the following command:
 
 ```bash
 module load ImageSmith/1.0
@@ -66,16 +71,24 @@ Use one of these URLs to access the image in your browser.
 In the Jupyter lab web page, you can open a 'Terminal' - that is all we need to build an image.
 
 
-## Desining your own Apptainer HPC Image
+# Designing Your Own Apptainer HPC Image
 
-Right from the start you should consider how you want to interact with the image:
+When designing your Apptainer HPC image, consider how you want to interact with it:
 
-    1. Command line tools only
-    2. Interactive software
-    3. A server started in the image
+1. **A Server Started in the Image**  
+   You may want your image to launch a server upon startup, facilitating remote access and interaction.
+   We will not cover that esplicitly here.
 
-If you primarily use interactive sessions based on R or Python for your daily work,
-I recommend installing Jupyter lab as well. This interface provides numerous possibilities for interacting with your software.
+2. **Command Line Tools Only**  
+   For those who ONLY rely on command line tools I recommand to create a script that handles the apptainer loading (incluiding all binds and other apptainer options) and make that script available as a command if you load the Lua module. We will not cover this version here, but you can look into my [Rustody_image github Repo](https://github.com/stela2502/Rustody_image) if you are interested.
+
+3. **Interactive Software**  
+   If you primarily use interactive sessions based on R or Python, I recommend installing JupyterLab. This provides numerous possibilities for interacting with your software like Terminal access, console access to R and Python, and also Jupter notebooks for R and Python.
+
+
+I recommand to create a script that handles the apptainer loading (incluiding all binds and other options) and make that script available as a command if you load the Lua module. We will not cover this version hgere, but you can look into my [Rustody_image github Repo](https://github.com/stela2502/Rustody_image) if you are interested.    
+
+## Minimal Configuration
 
 For a minimal configuration, we need the following:
 
@@ -85,17 +98,22 @@ For a minimal configuration, we need the following:
 
 This allows for interaction with command line tools as well as interactive usage of Python and R packages.
 
+## Additional Considerations
+
 Unfortunately due to Apptainer internals we are restricted to build the same system as the ImageSmith is based on. So we need to stick with alpine:latest for now.
+
+## Example
 
 Here’s how you can obtain a minimal Apptainer definition file for this setup:
 
 ```text
 Hi Chatty - can you give me a minimal Apptainer def file that builds this minimal system:
 What we need in a minimal configuration is therefore: Python with JupyterLab, R, and the R-Jupyter integration.
-Base it on Apline latest - please.
+Base it on Apline latest - please. 
 ```
 
-You will probably not get there from the start, but if you are critical and look for small things like ``From alpine:latest`` you can force Chatty to improve. If nothing else it is a first start. It is helpful to use the free GPT-4o for that.
+The response is normally lacking quite a bit, but you get the overall structure of the def file for free.
+If you are critical and look for small things like ``From alpine:latest`` you can force Chatty to improve. If nothing else it is a first start. It is helpful to use the free GPT-4o for that.
 
 
 My **modified** ChatGPT output:
@@ -106,13 +124,6 @@ My **modified** ChatGPT output:
 
 Bootstrap: docker
 From: alpine:latest  # Use the latest Alpine Linux image as the base
-
-%help
-    This container provides a minimal environment with:
-    - Python (with JupyterLab)
-    - R
-    - R-Jupyter integration
-    Based on Alpine Linux.
 
 %post
     # Update the package index and install essential packages
@@ -158,28 +169,80 @@ From: alpine:latest  # Use the latest Alpine Linux image as the base
 
 ```
 
-Let's go back to the ImageSmith - create a new directory:
+Let's go back to the ImageSmith to build an image based on this defintion:
+
+1. Create a new directory
+
+Jupyter lab allows you to create a folder using the graphical iterface, but you could also use the Terminal:
  
 ```sh
 mkdir mkdir Singularity_Workshop
 cd Singularity_Workshop
 ```
 
-Jupyter lab also has an option to create a new folder: in the upper left corner the third icon in the second row.
+If you rather want to use the graphical interface: in the upper left corner of the Jupyter lab is an icon list - the third icon in the second row creates a new folder.
+
+2. Create the definition file
 
 To create the definition file you can cd into the created folder or use Jupyter lab to navigate into that folder. On the command line only the vi editor is installed:
 
 ```bash
 vi Singularity_Workshop.def
 ```
-Paste the copied text with the middle mouse button and close a and save the vi session with ``:x``.
+Paste the copied text with the middle mouse button and save & close vi session with ``:x``.
 
-Using the Jupyter lab interface you can also create a new file in the folder using the large plus sign benethe the create folder icon. You can the select Other -> Text file copy in the text and save as  "Singularity_Workshop.def".
+Using the Jupyter lab interface you can also create a new file in the folder using the large plus sign benethe the create folder icon. You can the select Other -> Text file IN the main window and copy the text into the new file; save it as "Singularity_Workshop.def".
 
+3. Build a Apptainer sandbox
 
-Great we have our first definition of a Apptainer image. Let's build that:
+To build that sandbox for manual modification we can run this command:
 ```bash
 apptainer build --sandbox Singularity_Workshop Singularity_Workshop.def
+```
+
+If this breaks with your own version of the def file I recommand to create a new Minimal.def text file with all lines of the %post removed:
+```text
+Bootstrap: docker
+From: alpine:latest  # Use the latest Alpine Linux image as the base
+
+%post
+
+%environment
+    # Ensure /usr/local/bin is in the PATH so JupyterLab can be found
+    export PATH="/usr/local/bin:$PATH"
+    # if you want to install more python packages in the sandbox:
+    export PIP_BREAK_SYSTEM_PACKAGES=1
+
+ %runscript
+    # By default, run JupyterLab when the container starts
+    jupyter lab --port 9734 --ip=0.0.0.0 --allow-root --no-browser
+```
+
+You should keep the %environment and the %runscript as this will allow you to (1) install your packages as the install script will install them pater on nad (2) test if the manually moduified sandbox can start the jupyter lab as expected in the end.
+
+From that mminaiml def file you can build a MINIMAL sandbox and install your packages manuall - hammering out the issues of your %post section in one go:
+```bash
+apptainer build --sandbox Singularity_Workshop MINAIMAL.def
+apptainer shell --writable Singularity_Workshop
+```
+
+Or - assuming that the Singularity_Workshop sandbox was built correctly we now can use that sandbox to install the packages that we need for our daily work:
+
+```bash
+apptainer shell --writable Singularity_Workshop
+```
+
+Install all you need and do not forget to add all working install steps to the def file, too.
+This way all later builds will already have your modifications in it!
+
+Finally we build the image with:
+```bash
+apptainer build Singularity_Workshop.sif Singularity_Workshop
+```
+
+Or after you have added all manual steps into the def file:
+```bash
+apptainer build Singularity_Workshop.sif Singularity_Workshop.def
 ```
 
 That is the bare bone of image creation.

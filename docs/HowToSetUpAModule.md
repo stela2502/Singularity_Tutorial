@@ -2,8 +2,8 @@
 
 We have a shared folder in COSMOS-SENS 
 ``/scale/gr01/shared/common/``
-where we have set up a mosules and software folder.
-The modules installed there can be loaded into the module sytem by issuing
+where we have set up a modules and software folder.
+The modules installed there can be loaded into the module system by issuing:
 
 ```bash
 module use /scale/gr01/shared/common/modules
@@ -17,7 +17,7 @@ module load module_name/version
 ```
 
 To register a module you need to create the same folder in both the modules and software folder.
-Software will be installed into a ``software/<version>/`` directory whereas the lua definition of the software will reside in ``modules/<version>.lua``.
+Software will be installed into a ``software/<version>/`` directory whereas the Lua definition of the software will reside in the file ``modules/<version>.lua``.
 
 I am no master of modules and can only help you a litlle here.
 
@@ -58,13 +58,13 @@ family("images")
 
 ```
 
-This module file already defines what we need to do with the image - right?
-We need to copy the image to 
+This module Lua file already specifies where the image should be placed:
+```text
+local base = pathJoin("/scale/gr01/shared/common/software/Singularity_Workshop/1.0") 
+execute{cmd="singularity run -B/scale,/sw ".. base.. "/Singularity_Workshop_v1.0.sif", modeA={"load"} }
 ```
-/scale/gr01/shared/common/software/Singularity_Workshop/1.0/Singularity_Workshop_v1.0.sif
-```
+We need to copy the image to ``/scale/gr01/shared/common/software/Singularity_Workshop/1.0/Singularity_Workshop_v1.0.sif``.
 
+Of cause that module name will not be available for all of you due to user access rights restrictions on our shared folders.
 
-Of cause that same name will not be available for all of you as you can not access the same folders on our shared due to user rights restrictions.
-
-To make this all easier to use I have switched from running the commands on the terminal to [a Makefile based approach](AMakefileBasedApproach.md).
+In other words, you will need to rename your module. I often forget to change the module name or version in one or more places (an apptainer call or anywhere in the module). To simplify this whole process, I have transitioned from executing commands in the terminal to using[a Makefile based approach](AMakefileBasedApproach.md).
