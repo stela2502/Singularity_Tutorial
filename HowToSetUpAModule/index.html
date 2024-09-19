@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>How to set up an Apptainer image as a COSMOS-SENSE module - Singularity Tutorial and Workshop</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "How to set up an Apptainer image as a COSMOS-SENSE module";
+        var mkdocs_page_input_path = "HowToSetUpAModule.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Singularity Tutorial and Workshop
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Bioinformatics focused Apptainer/Singularity Workshop 2024</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../AMakefileBasedApproach/">A Makefile-based approach to build and maintain an Apptainer image</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">How to set up an Apptainer image as a COSMOS-SENSE module</a>
+    <ul class="current">
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../InDetailDefFile/">A simple Apptainer def file explained (by ChatGPT):</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Singularity Tutorial and Workshop</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">How to set up an Apptainer image as a COSMOS-SENSE module</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="how-to-set-up-an-apptainer-image-as-a-cosmos-sense-module">How to set up an Apptainer image as a COSMOS-SENSE module</h1>
+<p>We have a shared folder in COSMOS-SENS 
+<code>/scale/gr01/shared/common/</code>
+where we have set up a modules and software folder.
+The modules installed there can be loaded into the module system by issuing:</p>
+<pre><code class="language-bash">module use /scale/gr01/shared/common/modules
+</code></pre>
+<p>Afterwards all modules that were created by us are available using the normal </p>
+<pre><code class="language-bash">module spider module_name
+module load module_name/version
+</code></pre>
+<p>To register a module you need to create the same folder in both the modules and software folder.
+Software will be installed into a <code>software/&lt;version&gt;/</code> directory whereas the Lua definition of the software will reside in the file <code>modules/&lt;version&gt;.lua</code>.</p>
+<p>I am no master of modules and can only help you a litlle here.</p>
+<p>A typical module definition file can look like that:</p>
+<pre><code class="language-text">
+help([[This module is an example Singularity Image prowiding
+       a 'naked' Python Jupyter Lab interface to both Python and R ]])          
+
+local version = 1.0                                                      
+local base = pathJoin(&quot;/scale/gr01/shared/common/software/Singularity_Workshop/1.0&quot;) 
+
+
+-- this happens at load                                                        
+execute{cmd=&quot;singularity run -B/scale,/sw &quot;.. base.. &quot;/Singularity_Workshop_v1.0.sif&quot;, modeA={&quot;load&quot;} }
+
+
+-- this happens at unload   
+-- nothing here
+
+whatis(&quot;Name         : Singularity_Workshop singularity image&quot;)                        
+whatis(&quot;Version      : Singularity_Workshop 1.0)                                 
+whatis(&quot;Category     : Image&quot;)                                                  
+whatis(&quot;Description  : Singularity image providing Python and R and a jupyter lab&quot;)
+whatis(&quot;Installed on : 17.09.2024 &quot;)                                   
+whatis(&quot;Modified on  : --- &quot;)                                                   
+whatis(&quot;Installed by : Stefan Lang&quot;)                                             
+
+family(&quot;images&quot;)                                                                
+
+-- these I normally let in here for help if I need something else                   
+-- Change Module Path                                                           
+--local mroot = os.getenv(&quot;MODULEPATH_ROOT&quot;)                                    
+--local mdir = pathJoin(mroot,&quot;Compiler/anaconda&quot;,version)                      
+--prepend_path(&quot;MODULEPATH&quot;,mdir)                                               
+-- 
+
+</code></pre>
+<p>This module Lua file already specifies where the image should be placed:</p>
+<pre><code class="language-text">local base = pathJoin(&quot;/scale/gr01/shared/common/software/Singularity_Workshop/1.0&quot;) 
+execute{cmd=&quot;singularity run -B/scale,/sw &quot;.. base.. &quot;/Singularity_Workshop_v1.0.sif&quot;, modeA={&quot;load&quot;} }
+</code></pre>
+<p>We need to copy the image to <code>/scale/gr01/shared/common/software/Singularity_Workshop/1.0/Singularity_Workshop_v1.0.sif</code>.</p>
+<p>Of cause that module name will not be available for all of you due to user access rights restrictions on our shared folders.</p>
+<p>In other words, you will need to rename your module. I often forget to change the module name or version in one or more places (an apptainer call or anywhere in the module). To simplify this whole process, I have transitioned from executing commands in the terminal to using<a href="../AMakefileBasedApproach/">a Makefile based approach</a>.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../AMakefileBasedApproach/" class="btn btn-neutral float-left" title="A Makefile-based approach to build and maintain an Apptainer image"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../InDetailDefFile/" class="btn btn-neutral float-right" title="A simple Apptainer def file explained (by ChatGPT):">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../AMakefileBasedApproach/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../InDetailDefFile/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

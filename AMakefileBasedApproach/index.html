@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>A Makefile-based approach to build and maintain an Apptainer image - Singularity Tutorial and Workshop</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "A Makefile-based approach to build and maintain an Apptainer image";
+        var mkdocs_page_input_path = "AMakefileBasedApproach.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Singularity Tutorial and Workshop
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Bioinformatics focused Apptainer/Singularity Workshop 2024</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">A Makefile-based approach to build and maintain an Apptainer image</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#makefile-options-explained">Makefile Options Explained</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#how-to-use-this-package">How to Use This Package</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../HowToSetUpAModule/">How to set up an Apptainer image as a COSMOS-SENSE module</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../InDetailDefFile/">A simple Apptainer def file explained (by ChatGPT):</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Singularity Tutorial and Workshop</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">A Makefile-based approach to build and maintain an Apptainer image</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="a-makefile-based-approach-to-build-and-maintain-an-apptainer-image">A Makefile-based approach to build and maintain an Apptainer image</h1>
+<p>My plan for this task is to create a command that streamlines the development of an Apptainer image, much like how <code>cargo new &lt;package_name&gt; --lib</code> sets up a new Rust library project.</p>
+<p>The goal is to establish a structure where both the Apptainer build and deployment processes are automated and easily configurable. By doing so, you can quickly update the version or even the name of your package without needing to rewrite the build configuration each time. The main focus should be on creating a robust definition file, with the initial setup of the Lua model definition and other components being a one-time effort.</p>
+<p>The ImageSmith has my implementation of that idea installed as ascript:</p>
+<pre><code class="language-bash">/opt/ImageSmith/create_new_image_builder.sh &lt;new_directory_name&gt;
+</code></pre>
+<p>This will create a folder and populate it with a Makefile, a default definition file and two scripts; <code>shell.sh</code> and <code>run.sh</code>. </p>
+<h2 id="makefile-options-explained">Makefile Options Explained</h2>
+<ol>
+<li>
+<p><code>all</code>:
+    This is the default target that runs when you simply type make. It sequentially executes the clean, restart, build, and deploy targets. This option is a convenient way to manage the entire process in one go.</p>
+</li>
+<li>
+<p><code>restart</code>:
+    This target handles the sandbox environment, which is used to create the image. If the sandbox directory <code>$(SANDBOX_DIR)</code> already exists, it replaces it's contents; otherwise, it creates a new one. The sandbox is essentially a writable container that you can modify before building the final image.
+        Key command: <code>sudo apptainer build --sandbox $(SANDBOX_DIR) $(DEFINITION_FILE)</code></p>
+</li>
+<li>
+<p><code>build</code>:
+    This target builds the final Singularity image <code>$(IMAGE_NAME)</code> from the sandbox. The image is based on the sandbox. This is in theory not necessary if you update your definition file. I recommend to add all changes you apply to the sandbox to the definition file, too! But I do not always adhere to that philosophy...
+        Key command: <code>sudo apptainer build $(IMAGE_NAME) $(SANDBOX_DIR)</code></p>
+</li>
+<li>
+<p><code>deploy</code>:
+    This target copies the final image to the specified deployment directory <code>$(DEPLOY_DIR)</code> and creates the Lua defintion file based on the informations in the Makefile and the Lua outline in the <code>generate_module.sh</code> script. This is useful for moving the image to a location where it can be accessed and used by others.
+        Key command: <code>cp $(IMAGE_NAME) $(DEPLOY_DIR)</code></p>
+</li>
+<li>
+<p><code>clean</code>:
+    This target removes the sandbox directory and the image file. It's useful for cleaning up your workspace if you need to start fresh or if you're done with the current build.
+        Key command: <code>rm -rf $(SANDBOX_DIR) $(IMAGE_NAME</code></p>
+</li>
+</ol>
+<h2 id="how-to-use-this-package">How to Use This Package</h2>
+<p>After creating a new Apptainer image project, all scripts and the Makefile will be updated with your project name. To build a standard Bioinformatics Apptainer image, run:</p>
+<pre><code class="language-bash">make -C &lt;new_directory_name&gt;
+</code></pre>
+<p>This will create the sandbox, build the image, and stop at the deploy step. The deploy step is tailored to my development environment, and it will fail on other systems, such as when attempting to mount COSMOS-SENS on open COSMOS.</p>
+<p>To test it locally, create a mock deploy directory in your home folder:</p>
+<pre><code class="language-bash">mkdir -p ~/common/modules 
+mkdir ~/common/software
+</code></pre>
+<p>Then, update the Makefile by removing my personal path /sens5_shared/. If you wish to test your module on open COSMOS, modify the SERVER_DIR to point to your local path (e.g., $HOME/common/...). Otherwise, you can copy the image and Lua definition file to the server for deployment.</p>
+<p>Finally, rerun the <code>deploy</code> step:</p>
+<pre><code class="language-bash">make deploy
+</code></pre>
+<p>If you have modified the SERVER_DIR in the Makefile you can now test your module:</p>
+<pre><code class="language-bash">module use ~/common/modules/
+</code></pre>
+<p>Afterwads you can 'run' your new Apptainer image using </p>
+<pre><code class="language-bash">module load Singularity_Workshop/1.0
+</code></pre>
+<p>Please do not forget to run the image on the compute nodes again:</p>
+<pre><code class="language-text">#!/bin/bash
+#SBATCH --ntasks-per-node 1
+#SBATCH -N 1
+#SBATCH -t 08:00:00
+#SBATCH -A lu2024-7-5
+#SBATCH -J start_Si
+#SBATCH -o start_Si.%j.out
+#SBATCH -e start_Si.%j.err
+
+ml &lt;your module name&gt;/1.0
+
+exit 0
+</code></pre>
+<p>In case you have kept the SERVER_DIR as it was you now can create the path's on COSMOS-SENS and copy the image and the Lua definition file to the respective positions on the server.</p>
+<p>You can also start your apptainer image directly on open COSMOS using</p>
+<pre><code class="language-bash">apptainer run &lt;your new package&gt;_v1,0.sif
+</code></pre>
+<p>But do not forget to run that on the compute nodes, too.</p>
+<p>Thank you for participating in this workshop! I hope you found it useful, and I appreciate your involvement.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href=".." class="btn btn-neutral float-left" title="Bioinformatics focused Apptainer/Singularity Workshop 2024"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../HowToSetUpAModule/" class="btn btn-neutral float-right" title="How to set up an Apptainer image as a COSMOS-SENSE module">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../HowToSetUpAModule/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
