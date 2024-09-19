@@ -151,7 +151,6 @@ In the Jupyter lab web page, you can open a 'Terminal' - that is all we need to 
    If you primarily use interactive sessions based on R or Python, I recommend installing JupyterLab. This provides numerous possibilities for interacting with your software like Terminal access, console access to R and Python, and also Jupter notebooks for R and Python.</p>
 </li>
 </ol>
-<p>I recommand to create a script that handles the apptainer loading (incluiding all binds and other options) and make that script available as a command if you load the Lua module. We will not cover this version hgere, but you can look into my <a href="https://github.com/stela2502/Rustody_image">Rustody_image github Repo</a> if you are interested.    </p>
 <h2 id="minimal-configuration">Minimal Configuration</h2>
 <p>For a minimal configuration, we need the following:</p>
 <ul>
@@ -163,7 +162,7 @@ In the Jupyter lab web page, you can open a 'Terminal' - that is all we need to 
 <h2 id="additional-considerations">Additional Considerations</h2>
 <p>Unfortunately due to Apptainer internals we are restricted to build the same system as the ImageSmith is based on. So we need to stick with alpine:latest for now.</p>
 <h2 id="example">Example</h2>
-<p>Here’s how you can obtain a minimal Apptainer definition file for this setup:</p>
+<p>Here’s how you can obtain a minimal Apptainer definition file for this setup using ChatGPT:</p>
 <pre><code class="language-text">Hi Chatty - can you give me a minimal Apptainer def file that builds this minimal system:
 What we need in a minimal configuration is therefore: Python with JupyterLab, R, and the R-Jupyter integration.
 Base it on Apline latest - please. 
@@ -183,6 +182,7 @@ From: alpine:latest  # Use the latest Alpine Linux image as the base
     apk update
 
     # Install build tools and libraries required for Python and R
+    # You must not have comments after the '\' in the following lines!
     apk add --no-cache bash \
         build-base \
         zeromq-dev \
@@ -222,25 +222,19 @@ From: alpine:latest  # Use the latest Alpine Linux image as the base
 
 </code></pre>
 <p>Let's go back to the ImageSmith to build an image based on this defintion:</p>
-<ol>
-<li>Create a new directory</li>
-</ol>
+<h3 id="create-a-new-directory">Create a new directory</h3>
 <p>Jupyter lab allows you to create a folder using the graphical iterface, but you could also use the Terminal:</p>
 <pre><code class="language-sh">mkdir mkdir Singularity_Workshop
 cd Singularity_Workshop
 </code></pre>
-<p>If you rather want to use the graphical interface: in the upper left corner of the Jupyter lab is an icon list - the third icon in the second row creates a new folder.</p>
-<ol>
-<li>Create the definition file</li>
-</ol>
+<p>If you rather want to use the graphical interface: in the upper left corner of the Jupyter lab is an icon list - the third icon creates a new folder.</p>
+<h3 id="create-the-definition-file">Create the definition file</h3>
 <p>To create the definition file you can cd into the created folder or use Jupyter lab to navigate into that folder. On the command line only the vi editor is installed:</p>
 <pre><code class="language-bash">vi Singularity_Workshop.def
 </code></pre>
 <p>Paste the copied text with the middle mouse button and save &amp; close vi session with <code>:x</code>.</p>
-<p>Using the Jupyter lab interface you can also create a new file in the folder using the large plus sign benethe the create folder icon. You can the select Other -&gt; Text file IN the main window and copy the text into the new file; save it as "Singularity_Workshop.def".</p>
-<ol>
-<li>Build a Apptainer sandbox</li>
-</ol>
+<p>Using the Jupyter lab interface you can also create a new file in the folder using the large plus sign benethe the create folder icon. You can then select Other -&gt; Text file in the main window and copy the text into the new file; save it as "Singularity_Workshop.def".</p>
+<h3 id="build-a-apptainer-sandbox">Build a Apptainer sandbox</h3>
 <p>To build that sandbox for manual modification we can run this command:</p>
 <pre><code class="language-bash">apptainer build --sandbox Singularity_Workshop Singularity_Workshop.def
 </code></pre>
@@ -260,7 +254,7 @@ From: alpine:latest  # Use the latest Alpine Linux image as the base
     # By default, run JupyterLab when the container starts
     jupyter lab --port 9734 --ip=0.0.0.0 --allow-root --no-browser
 </code></pre>
-<p>You should keep the %environment and the %runscript as this will allow you to (1) install your packages as the install script will install them pater on nad (2) test if the manually moduified sandbox can start the jupyter lab as expected in the end.</p>
+<p>You should keep the %environment and the %runscript as this will allow you to (1) install your packages as the install script will install them pater on and (2) test if the manually modified sandbox can start the jupyter lab as expected in the end.</p>
 <p>From that mminaiml def file you can build a MINIMAL sandbox and install your packages manuall - hammering out the issues of your %post section in one go:</p>
 <pre><code class="language-bash">apptainer build --sandbox Singularity_Workshop MINAIMAL.def
 apptainer shell --writable Singularity_Workshop
@@ -268,7 +262,7 @@ apptainer shell --writable Singularity_Workshop
 <p>Or - assuming that the Singularity_Workshop sandbox was built correctly we now can use that sandbox to install the packages that we need for our daily work:</p>
 <pre><code class="language-bash">apptainer shell --writable Singularity_Workshop
 </code></pre>
-<p>Install all you need and do not forget to add all working install steps to the def file, too.
+<p>Install the software you need and do not forget to add all working install steps to the def file, too.
 This way all later builds will already have your modifications in it!</p>
 <p>Finally we build the image with:</p>
 <pre><code class="language-bash">apptainer build Singularity_Workshop.sif Singularity_Workshop
@@ -326,5 +320,5 @@ This way all later builds will already have your modifications in it!</p>
 
 <!--
 MkDocs version : 1.6.1
-Build Date UTC : 2024-09-19 10:38:02.059812+00:00
+Build Date UTC : 2024-09-19 11:13:37.462933+00:00
 -->
