@@ -11,7 +11,7 @@ The ImageSmith has my implementation of that idea installed as ascript:
 /opt/ImageSmith/create_new_image_builder.sh <new_directory_name>
 ```
 
-This will create a folder and populate it with a Makefile, a default definition file and two scripts; ``shell.sh`` and ``run.sh``. 
+This will create a folder and populate it with a Makefile, a default definition file and three scripts; ``shell.sh``, ``run.sh`` and ``generate_module.sh``. 
 
 
 ## Makefile Options Explained
@@ -44,31 +44,44 @@ After creating a new Apptainer image project, all scripts and the Makefile will 
 make -C <new_directory_name>
 ```
 
-This will create the sandbox, build the image, and stop at the deploy step. The deploy step is tailored to my development environment, and it will fail on other systems, such as when attempting to mount COSMOS-SENS on open COSMOS.
+This will create the sandbox, build the image, and deploy the module to a path in your home folder. The deploy step is tailored to my development environment where I mount the COSMOS-SENS shared folder in ~/sens05_shared/. When you also do that you can deploy the image directly to COMSOS_SENS.
+At the moment this will create the whole (local) folder and place the module there.
+This module will work as is if you copy it to COSMOS-SENS by hand.
 
-To test it locally, create a mock deploy directory in your home folder:
+### Test the module on open COSMOS
+
+
+The first test should be if you can load it directly using apptainer:
 ```bash
-mkdir -p ~/common/modules 
-mkdir ~/common/software
+apptainer run <your new package>_v1.0.sif
+``` 
+But do not forget to run that on the compute nodes, too.
+
+
+You can also test the function of the Lua module on open COSMOS, but for that you need to adjust the path the Lua module expects the image:
+
+Open the created Lua file at ``~/sens05_shared/common/modules/<SANDBOX_DIR>/<VERSION>.lua``.
+You need to change the line 
+```text
+local base = pathJoin("/scale/gr01/shared/common/software/<SANDBOX_DIR>/<VERSION>")
 ```
-
-Then, update the Makefile by removing my personal path /sens5_shared/. If you wish to test your module on open COSMOS, modify the SERVER_DIR to point to your local path (e.g., $HOME/common/...). Otherwise, you can copy the image and Lua definition file to the server for deployment.
-
-Finally, rerun the ``deploy`` step:
-```bash
-make deploy
+to 
+```text
+home=os.getenv( "HOME" )
+local base = pathJoin(home,"/sens05_shared/common/software/<SANDBOX_DIR>/<VERSION>")
 ```
+Keep the project specific ``<SANDBOX_DIR>/<VERSION>``.
 
-If you have modified the SERVER_DIR in the Makefile you can now test your module:
+Afterwards you can register your personal modules / software folder pair as module paths like that:
 
 ```bash
-module use ~/common/modules/
+module use ~/sens05_shared/common/modules/
 ```
 
 Afterwads you can 'run' your new Apptainer image using 
 
 ```bash
-module load Singularity_Workshop/1.0
+module load <SANDBOX_DIR>/<VERSION>
 ```
 
 Please do not forget to run the image on the compute nodes again:
@@ -82,18 +95,15 @@ Please do not forget to run the image on the compute nodes again:
 #SBATCH -o start_Si.%j.out
 #SBATCH -e start_Si.%j.err
 
-ml <your module name>/1.0
+ml <SANDBOX_DIR>/<VERSION>
 
 exit 0
 ```
 
-In case you have kept the SERVER_DIR as it was you now can create the path's on COSMOS-SENS and copy the image and the Lua definition file to the respective positions on the server.
-
-You can also start your apptainer image directly on open COSMOS using
+If you have modified the Lua definition file and now want to copy the image to COSMOS-SENS the easiest is to remove the ``~/sens01_shared/common`` folder and re-deploy the module:
 ```bash
-apptainer run <your new package>_v1,0.sif
+make deploy
 ``` 
-But do not forget to run that on the compute nodes, too.
 
 
 

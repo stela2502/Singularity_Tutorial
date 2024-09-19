@@ -102,7 +102,7 @@ Unfortunately due to Apptainer internals we are restricted to build the same sys
 
 ## Example
 
-Here’s how you can obtain a minimal Apptainer definition file for this setup:
+Here’s how you can obtain a minimal Apptainer definition file for this setup using ChatGPT:
 
 ```text
 Hi Chatty - can you give me a minimal Apptainer def file that builds this minimal system:
@@ -128,6 +128,7 @@ From: alpine:latest  # Use the latest Alpine Linux image as the base
     apk update
 
     # Install build tools and libraries required for Python and R
+    # You must not have comments after the '\' in the following lines!
     apk add --no-cache bash \
         build-base \
         zeromq-dev \
@@ -169,18 +170,18 @@ From: alpine:latest  # Use the latest Alpine Linux image as the base
 
 Let's go back to the ImageSmith to build an image based on this defintion:
 
-1. Create a new directory
+### Create a new directory
 
 Jupyter lab allows you to create a folder using the graphical iterface, but you could also use the Terminal:
- 
+     
 ```sh
 mkdir mkdir Singularity_Workshop
 cd Singularity_Workshop
 ```
 
-If you rather want to use the graphical interface: in the upper left corner of the Jupyter lab is an icon list - the third icon in the second row creates a new folder.
+If you rather want to use the graphical interface: in the upper left corner of the Jupyter lab is an icon list - the third icon creates a new folder.
 
-2. Create the definition file
+### Create the definition file
 
 To create the definition file you can cd into the created folder or use Jupyter lab to navigate into that folder. On the command line only the vi editor is installed:
 
@@ -189,9 +190,9 @@ vi Singularity_Workshop.def
 ```
 Paste the copied text with the middle mouse button and save & close vi session with ``:x``.
 
-Using the Jupyter lab interface you can also create a new file in the folder using the large plus sign benethe the create folder icon. You can the select Other -> Text file IN the main window and copy the text into the new file; save it as "Singularity_Workshop.def".
+Using the Jupyter lab interface you can also create a new file in the folder using the large plus sign benethe the create folder icon. You can then select Other -> Text file in the main window and copy the text into the new file; save it as "Singularity_Workshop.def".
 
-3. Build a Apptainer sandbox
+### Build a Apptainer sandbox
 
 To build that sandbox for manual modification we can run this command:
 ```bash
@@ -216,7 +217,7 @@ From: alpine:latest  # Use the latest Alpine Linux image as the base
     jupyter lab --port 9734 --ip=0.0.0.0 --allow-root --no-browser
 ```
 
-You should keep the %environment and the %runscript as this will allow you to (1) install your packages as the install script will install them pater on nad (2) test if the manually moduified sandbox can start the jupyter lab as expected in the end.
+You should keep the %environment and the %runscript as this will allow you to (1) install your packages as the install script will install them pater on and (2) test if the manually modified sandbox can start the jupyter lab as expected in the end.
 
 From that mminaiml def file you can build a MINIMAL sandbox and install your packages manuall - hammering out the issues of your %post section in one go:
 ```bash
@@ -230,7 +231,7 @@ Or - assuming that the Singularity_Workshop sandbox was built correctly we now c
 apptainer shell --writable Singularity_Workshop
 ```
 
-Install all you need and do not forget to add all working install steps to the def file, too.
+Install the software you need and do not forget to add all working install steps to the def file, too.
 This way all later builds will already have your modifications in it!
 
 Finally we build the image with:
