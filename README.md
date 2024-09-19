@@ -49,13 +49,13 @@ Ensure you have **Python** and **MkDocs** installed on your system:
 
 ```
 pip install mkdocs
-<script_end>
+```
 
 Optionally, you can also install the MkDocs Material theme, which offers a more modern look and feel:
 
 ```
 pip install mkdocs-material
-<script_end>
+```
 
 ### Building the HTML Documentation
 
@@ -66,7 +66,7 @@ To generate the HTML pages from the markdown files in the `docs/` directory:
 
 ```
 mkdocs build
-<script_end>
+```
 
 This will create a `site/` directory containing the HTML files. You can deploy these HTML files to any web server or GitHub Pages.
 
@@ -76,7 +76,7 @@ To preview the site locally while you work on the documentation:
 
 ```
 mkdocs serve
-<script_end>
+```
 
 This will start a local development server, and you can view the site in your browser at `http://127.0.0.1:8000/`. Any changes made to the markdown files will automatically refresh the site.
 
@@ -86,7 +86,7 @@ If you're hosting the documentation on GitHub Pages, you can easily deploy it wi
 
 ```
 mkdocs gh-deploy
-<script_end>
+```
 
 This command will build the documentation and push it to the `gh-pages` branch of your GitHub repository.
 
