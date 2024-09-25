@@ -120,7 +120,7 @@ sbatch RunImageSmith.sbatch
 After submission, you will receive the PID of the SLURM job. To view the process output, you can use:
 
 ```bash
-watch cat <PID>
+watch cat *<PID>*
 ```
 In the output, you will find a web link to access the image. Look for lines similar to:
 ```text
@@ -257,7 +257,7 @@ To create the definition file  only the vi editor is installed on the command li
 ```bash
 vi Singularity_Workshop.def
 ```
-Paste the copied text with the middle mouse button and save & close vi session with ``:x``.
+Paste the copied text with the middle mouse button and save & close vi session with pressing `Esc` and then writing ``:x``.
 
 As the vi tool is speical I recommend you to use the Jupyter lab interface instead: You can create a new file in the folder using the large plus sign beneth the create folder icon. You can then select Other -> Text file in the main window and copy the text into the new file; save it as "Singularity_Workshop.def".
 
@@ -284,7 +284,7 @@ From: alpine:latest  # Use the latest Alpine Linux image as the base
     # if you want to install more python packages in the sandbox:
     export PIP_BREAK_SYSTEM_PACKAGES=1
 
- %runscript
+%runscript
     # By default, run JupyterLab when the container starts
     jupyter lab --port 9734 --ip=0.0.0.0 --allow-root --no-browser
 ```
@@ -293,7 +293,7 @@ You should keep the %environment and the %runscript as this will allow you to (1
 
 1. From that minimal def file you can build a MINIMAL sandbox and install your packages manually - hammering out the issues of your %post section in one go:
 ```bash
-apptainer build --sandbox Singularity_Workshop MINAIMAL.def
+apptainer build --sandbox Singularity_Workshop MINIMAL.def
 apptainer shell --writable Singularity_Workshop
 ```
 2. After you have installed everything - including the jupyter lab server you can test the final funtionality with:

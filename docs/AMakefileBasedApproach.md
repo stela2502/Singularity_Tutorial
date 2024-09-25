@@ -118,10 +118,14 @@ make deploy
 I recommend you to upload you image definitions to GitHub (do not upload the image and the sandbox by either exclude them in the ``.gitignore`` or calling ``make clean`` before ``git add --all .``.
 This way you can easily clone that on your normal desktop, install apptainer there and build and deploy your image from your normal desktop to COSMOS-SENS.
 
-If you can not directly deploy to COSMOS-SENS you can simply opy the ``software/<package_name>/<version>/*`` and ``module/<package_name>/<version>.lua`` files and folders to the COSMOS-SENS path ``/scale/gr01/shared/common/``.
+If you can not directly deploy to COSMOS-SENS you can simply copy the ``software/<package_name>/<version>/*`` and ``module/<package_name>/<version>.lua`` files and folders to the COSMOS-SENS path ``/scale/gr01/shared/common/``.
 
 
 Please document your images well, upload them to COSMOS-SENS and share them with us. I hope we all can easen our workloads by sharing!
-While you are at it you can check out my SingSing/1.6 package that provides a single cell analysis environment with Seurat, scanpy and scvelo and other tools installed. 
+While you are at it you can check out my SingSing/1.6 package that provides a single cell analysis environment with Seurat, scanpy and scvelo and other tools installed ([on github](https://github.com/stela2502/singularityImages) this pre ImageSmith). 
 
 Thank you for participating in this workshop! I hope you found it useful, and I appreciate your involvement.
+
+Oh and please do not forget right now:
+
+PLEASE REMOVE THE DATA YOU CREATED FROM THE SERVER!
