@@ -73,6 +73,21 @@ apptainer build MyPackage.sif MyPackage.def
 apptainer run MyPackage.sif
 ```
 
+This gives you a barebones Linux image with a few essential things installed. In order to install your own software you need to make a sandbox first:
+
+```bash
+apptainer build --sandbox MyPackage MyPackage.def
+```
+
+This will create a folder `MyPackage` which you can then shell into:
+
+```bash
+apptainer shell --writable MyPackage
+```
+
+Where you can now install your own software using the usual methods. After this you can test it, and then build a .sif image, but this is something that we will cover later.
+
+
 While it is technically possible for you to install Apptainer on your own computer, doing so would introduce unnecessary complexity to the course. Installing Apptainer requires administrative (super user) rights, which can be a challenge if your computer is managed by your institution, such as LU. Additionally, each operating system (Linux, Windows, macOS) has its own specific installation steps, and supporting all platforms would take us beyond the focus of this workshop.
 
 Instead, we will be using the open COSMOS system to build the images. While you may not have super user rights there either, Apptainer is already installed, and we've developed a method to use an existing Apptainer image to build new ones. This allows us to work efficiently within the system provided, without needing to deal with the complexities of local installations.
