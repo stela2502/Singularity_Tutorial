@@ -122,7 +122,7 @@ If you can not directly deploy to COSMOS-SENS you can simply copy the ``software
 
 
 Please document your images well, upload them to COSMOS-SENS and share them with us. I hope we all can easen our workloads by sharing!
-While you are at it you can check out my SingSing/1.6 package that provides a single cell analysis environment with Seurat, scanpy and scvelo and other tools installed. 
+While you are at it you can check out my SingSing/1.6 package that provides a single cell analysis environment with Seurat, scanpy and scvelo and other tools installed ([on github](https://github.com/stela2502/singularityImages) this pre ImageSmith). 
 
 Thank you for participating in this workshop! I hope you found it useful, and I appreciate your involvement.
 
