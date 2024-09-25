@@ -1,5 +1,7 @@
 # Singularity/Apptainer Workshop Materials
 
+The built documentation can be found here: https://stela2502.github.io/Singularity_Tutorial/.
+
 This repository contains the teaching materials for the **Singularity/Apptainer course**, hosted by the Lund Bioinformatics Core Unit in 2024. The course is designed to introduce participants to the process of building, managing, and deploying software using Apptainer (formerly Singularity) containers, with a focus on HPC environments and deployment strategies on the **COSMOS-SENS platform**.
 
 ## Overview
