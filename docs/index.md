@@ -118,7 +118,7 @@ sbatch RunImageSmith.sbatch
 After submission, you will receive the PID of the SLURM job. To view the process output, you can use:
 
 ```bash
-watch cat <PID>
+watch cat *<PID>*
 ```
 In the output, you will find a web link to access the image. Look for lines similar to:
 ```text
