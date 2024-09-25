@@ -40,7 +40,7 @@ The Makefile is the central organizer of this whole package. The ``generate_modu
 
 ## How to Use This Package
 
-The package path you have now uses the Bioinformatics minimal definition file to install R and Python and to make them accessible using the Jupyter lab server. You can simply replace it's contents with the defintion file you have prepared in the last step.
+The package path you have now uses the Bioinformatics minimal definition file to install R and Python and to make them accessible using the Jupyter lab server. You can, for example, simply replace it's contents with the defintion file you have prepared in the last step.
 
 
 To build your own project now you can somply run:
@@ -53,9 +53,8 @@ cd <path_to>/<project_name>
 make
 ```
 
-The deploy step is currently tailored to my development environment where I mount the COSMOS-SENS shared folder ``/scale/gr01/shared`` in ~/sens05_shared/. When you also do that on your own computer you can deploy the image directly to COMSOS_SENS. At the moment the ``deploy`` will create a path in your home and build a module for COSMOS there. 
-On open COSMOS we can not mount COSMOS-SENS and therfore the deploy will create the local folder and place the module there.
-This module will work as is if you copy the ``software/<package_name>/<version>/*`` and ``module/<package_name>/<version>.lua`` files and folders to the respective COSMOS-SENS path ``/scale/gr01/shared/common/``.
+The deploy step is currently tailored to my development environment where I mount the COSMOS-SENS shared folder ``/scale/gr01/shared`` in ``~/sens05_shared/``. When you also do that on your own computer you can deploy the image directly to COMSOS_SENS. On open COSMOS we can not mount COSMOS-SENS and therefore the deploy will create the local folder and place the module there.
+This module will work 'as is' if you copy the ``software/<package_name>/<version>/*`` and ``module/<package_name>/<version>.lua`` files and folders to their respective COSMOS-SENS paths ``/scale/gr01/shared/common/``.
 
 ### Test the module on open COSMOS
 
