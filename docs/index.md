@@ -6,13 +6,17 @@ Apptainer (formerly known as Singularity) is a powerful containerization tool ta
 
 Containers encapsulate software environments, including libraries, dependencies, and the application itself, ensuring reproducibility and ease of deployment. This is especially valuable in bioinformatics, where software dependencies can be complex and challenging to manage.
 
-Remember when R 4.4 was deamed unsave and automatically updated - destroying your previous workflow? If you had your Apptainer based software then you could still use the 'unsave' R 4.4 workflow.
-And in addition Apptainer provides a way to bundle the tools and packages you need for your analysis in one place, install them on you HPC system without the help of anybody else and use the same software both on your development machine as well as on the HPC system.
+## Why use Apptainer/Sigularity
 
-Although Apptainer is available for all major operating systems, the installation process on Windows and Mac is not as straightforward as on a pure Linux system. Therefore, we will run this course using an Apptainer image. This image can be installed on any system that supports Apptainer and allows you to build an image as a regular user - even in an HPC environment.
+1. **Containers are safe from external changes.** Remember when R 4.4 was deemed unsafe and LU automatically updated R without warning and destroyed your previous workflow? If your setup was Apptainer based then this would not be affected.
+
+2. **Reproducibility** Workflows will give a result, but changing the workflow (even updating packages) may lead to differences. To make results reproducilble it makes sense to have an image of your workflow that cannot change. This would be useful for future labmates when you leave the lab, but still need to use your workflows.
+
+3. **Installing own software on COSMOS-SENS**. LUNARC are happy to install software, but sometimes some python packages are a pain to install. Apptainer provides a way to bundle the tools and packages you need for your analysis in one place and install them on you HPC system without the help of anybody while using the same software both on your development machine as well as on the HPC platform.
+
+***Although Apptainer is available for all major operating systems, the installation process on Windows and Mac is not as straightforward as on a pure Linux system***. Therefore, we will run this course using an Apptainer image. This image can be installed on any system that supports Apptainer and allows you to build an image as a regular user - even in an HPC environment. ***In essence, we are going to use an image to make an image***.
 
 ## Building Apptainer images on your developmental machine
-
 
 Building an Apptainer image from start to finish can be summarized in three main steps:
 
@@ -20,7 +24,7 @@ Building an Apptainer image from start to finish can be summarized in three main
 
     Save this text in a definition file like "MyPackage.def".
 ```text
-# Which operating system should be used as a bassis for this image
+# Which operating system should be used as a basis for this image
 bootstrap: docker
 From: alpine:latest
 
@@ -74,24 +78,22 @@ While it is technically possible for you to install Apptainer on your own comput
 Instead, we will be using the open COSMOS system to build the images. While you may not have super user rights there either, Apptainer is already installed, and we've developed a method to use an existing Apptainer image to build new ones. This allows us to work efficiently within the system provided, without needing to deal with the complexities of local installations.
 
 
-## Building Apptainer images for COSMOS-SENSE on open COSMOS
+## Building Apptainer images for COSMOS-SENS on open COSMOS
 
 For this workshop, we will use the open COSMOS system to build our Apptainer images.
 To get started, you'll need to [download ThinLink](https://www.cendio.com/thinlinc/download/) and log into open COSMOS at ``cosmos-dt.lunarc.lu.se``.
 
-Building an apptainer image does need superuser rights or at least some elevated rights on the system.
+Building an apptainer image needs superuser rights or at least some elevated rights on the system.
 This means that on most HPC platforms, even if they support Singularity/Apptainer, you won't be able to build an image directly due to restricted permissions.
 
 
-To overcome this limitation, we developed an Apptainer image called [ImageSmith](https://github.com/stela2502/ImageSmith), which has Apptainer installed inside it. This allows you to build Apptainer images without needing superuser rights.
-
-The ImageSmith image is based on Alpine Linux, chosen for its ability to create slim, efficient images. It has already been installed as a module on COSMOS. You can load the module with the following command:
+To overcome this limitation, Stefan had developed an Apptainer image called [ImageSmith](https://github.com/stela2502/ImageSmith), which has Apptainer installed inside it. This allows you to build Apptainer images without needing superuser rights. The ImageSmith image is based on Alpine Linux, chosen for its ability to create slim, efficient images. It has already been installed as a module on COSMOS which you can load with the following command:
 
 ```bash
 module load ImageSmith/1.0
 ```
 
-However, as responsible bioinformaticians, we will not run the image directly on our frontend systems. Instead, we will execute it on the compute nodes:
+However, as responsible bioinformaticians (hopefully), we will not run the image directly on our frontend systems. Instead, we will execute it on a compute node:
 
 
 To do this, copy the following into a file named ``RunImageSmith.sbatch``:
@@ -269,7 +271,7 @@ To build that sandbox for manual modification we can run this command:
 apptainer build --sandbox Singularity_Workshop Singularity_Workshop.def
 ```
 
-If this breaks with your own version of the def file I recommand to create a new Minimal.def text file with all lines of the %post removed:
+If this breaks with your own version of the def file, create a new Minimal.def text file with all lines of the %post removed:
 ```text
 Bootstrap: docker
 From: alpine:latest  # Use the latest Alpine Linux image as the base
