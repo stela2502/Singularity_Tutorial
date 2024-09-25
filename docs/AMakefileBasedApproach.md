@@ -125,3 +125,7 @@ Please document your images well, upload them to COSMOS-SENS and share them with
 While you are at it you can check out my SingSing/1.6 package that provides a single cell analysis environment with Seurat, scanpy and scvelo and other tools installed. 
 
 Thank you for participating in this workshop! I hope you found it useful, and I appreciate your involvement.
+
+Oh and please do not forget right now:
+
+PLEASE REMOVE THE DATA YOU CREATED FROM THE SERVER!
