@@ -5,18 +5,18 @@
 Apptainer (formerly known as Singularity) is a powerful containerization tool tailored for scientific and high-performance computing (HPC) environments. Unlike other containerization platforms like Docker, Apptainer is designed with security in mind, allowing users to run containers without needing elevated privileges. This makes it an excellent choice for bioinformaticians working on shared or secure systems.
 
 Containers encapsulate software environments, including libraries, dependencies, and the application itself, ensuring reproducibility and ease of deployment. This is especially valuable in bioinformatics, where software dependencies can be complex and challenging to manage.
-Remember when R 4.4 was deamed unsave and automatically updated - destroying your previous workflow? If you had your Apptainer based workflow then you could still use the 'unsave' R 4.4 workflow.
-And in addition Apptainer provides a way to bundle the tools and packages you need for your analysis in one place, install them on COSMOS-SENS without the help of anybody else and use the same software both on your development machine as well as on COSMOS-SENS.
 
-Although Apptainer is available for all major operating systems, the installation process on Windows and Mac is not as straightforward as on a pure Linux system. Therefore, we will run this course using an Apptainer image. This image can be installed on any system that supports Apptainer and allows you to build an image as a regular user.
+Remember when R 4.4 was deamed unsave and automatically updated - destroying your previous workflow? If you had your Apptainer based software then you could still use the 'unsave' R 4.4 workflow.
+And in addition Apptainer provides a way to bundle the tools and packages you need for your analysis in one place, install them on you HPC system without the help of anybody else and use the same software both on your development machine as well as on the HPC system.
+
+Although Apptainer is available for all major operating systems, the installation process on Windows and Mac is not as straightforward as on a pure Linux system. Therefore, we will run this course using an Apptainer image. This image can be installed on any system that supports Apptainer and allows you to build an image as a regular user - even in an HPC environment.
 
 ## Building Apptainer images on your developmental machine
 
-We will not do that here. But you can of casue install Apptainer on your computer.
-Wou will have either a Windows machine or a Mac and will need super user rights. 
-That will likely be a problem for you if LU manages your computer. Anyhow - if you have super user right on your computer you can install Apptainer and then do this to create a minimal apline linux system image:
 
-1. Create a minmal defintion file
+Building an Apptainer image from start to finish can be summarized in three main steps:
+
+1. Create a defintion file
 
     Save this text in a definition file like "MyPackage.def".
 ```text
@@ -38,9 +38,6 @@ From: alpine:latest
         libffi-dev \
         musl-dev \
         openblas-dev \
-        R \
-        R-dev \
-        R-doc \
         python3 \
         py3-pip \
         python3-dev \
@@ -64,31 +61,31 @@ From: alpine:latest
     jupyter lab --port 9734 --ip=0.0.0.0 --allow-root --no-browser
 ```
 2. Build the image
-    Special focus on the sudo here:
 ```bash
-sudo apptainer build MyPackage.sif MyPackage.def
+apptainer build MyPackage.sif MyPackage.def
 ```
 3. Start the image
 ```bash
 apptainer run MyPackage.sif
 ```
 
-But as I meantioned before most of you might not have super user rights on your own computer.
-Therefore we are using the open COSMOS system to build the images for thsi workshop.
+While it is technically possible for you to install Apptainer on your own computer, doing so would introduce unnecessary complexity to the course. Installing Apptainer requires administrative (super user) rights, which can be a challenge if your computer is managed by your institution, such as LU. Additionally, each operating system (Linux, Windows, macOS) has its own specific installation steps, and supporting all platforms would take us beyond the focus of this workshop.
 
-You might argue that you do not have super user right there either, but at least apptainer is installed and we have come up with a way to use an apptainer image to build apptainer images.
+Instead, we will be using the open COSMOS system to build the images. While you may not have super user rights there either, Apptainer is already installed, and we've developed a method to use an existing Apptainer image to build new ones. This allows us to work efficiently within the system provided, without needing to deal with the complexities of local installations.
+
 
 ## Building Apptainer images for COSMOS-SENSE on open COSMOS
 
 For this workshop, we will use the open COSMOS system to build our Apptainer images.
-To do this, you'll need to [download](https://www.cendio.com/thinlinc/download/) Thinlink and log into open COSMOS at cosmos-dt.lunarc.lu.se.
+To get started, you'll need to [download ThinLink](https://www.cendio.com/thinlinc/download/) and log into open COSMOS at ``cosmos-dt.lunarc.lu.se``.
 
 Building an apptainer image does need superuser rights or at least some elevated rights on the system.
-In other words you can not build an Apptainer image on an HPC platform - even if the platform does support Singulatrity/Apptainer.
-To fix this we deveoped an Apptainer image that has apptainer installed inside: [ImageSmith](https://github.com/stela2502/ImageSmith).
+IThis means that on most HPC platforms, even if they support Singularity/Apptainer, you won't be able to build an image directly due to restricted permissions.
 
-This image is based on Apline linux as it produces quite slim images and it is installed as a module on COSMOS.
-You can load this module with the following command:
+
+To overcome this limitation, we developed an Apptainer image called [ImageSmith](https://github.com/stela2502/ImageSmith), which has Apptainer installed inside it. This allows you to build Apptainer images without needing superuser rights.
+
+The ImageSmith image is based on Alpine Linux, chosen for its ability to create slim, efficient images. It has already been installed as a module on COSMOS. You can load the module with the following command:
 
 ```bash
 module load ImageSmith/1.0
@@ -238,7 +235,7 @@ From: alpine:latest  # Use the latest Alpine Linux image as the base
 
 ```
 
-Let's go back to the ImageSmith to build an image based on this defintion:
+Let's go back to the ImageSmith to build an image based on this definition:
 
 ### Create a new directory
 
@@ -253,16 +250,19 @@ If you rather want to use the graphical interface: in the upper left corner of t
 
 ### Create the definition file
 
-To create the definition file you can cd into the created folder or use Jupyter lab to navigate into that folder. On the command line only the vi editor is installed:
+To create the definition file  only the vi editor is installed on the command line:
 
 ```bash
 vi Singularity_Workshop.def
 ```
 Paste the copied text with the middle mouse button and save & close vi session with ``:x``.
 
-Using the Jupyter lab interface you can also create a new file in the folder using the large plus sign benethe the create folder icon. You can then select Other -> Text file in the main window and copy the text into the new file; save it as "Singularity_Workshop.def".
+I recommend you to use the Jupyter lab interface instead: You can create a new file in the folder using the large plus sign beneth the create folder icon. You can then select Other -> Text file in the main window and copy the text into the new file; save it as "Singularity_Workshop.def".
 
 ### Build an Apptainer sandbox
+
+The sandbox is an intermediate writable folder representation of the final Apptainer image.
+It is very useful to debug a failing %post section, but also to quickly install new packages if the rest of the image should stay the same.
 
 To build that sandbox for manual modification we can run this command:
 ```bash
@@ -287,20 +287,19 @@ From: alpine:latest  # Use the latest Alpine Linux image as the base
     jupyter lab --port 9734 --ip=0.0.0.0 --allow-root --no-browser
 ```
 
-You should keep the %environment and the %runscript as this will allow you to (1) install your packages as the install script will install them pater on and (2) test if the manually modified sandbox can start the jupyter lab as expected in the end.
+You should keep the %environment and the %runscript as this will allow you to (1) install your Python packages into the system directory mimiking the install process and (2) test if the manually modified sandbox can start the jupyter lab as expected in the end.
 
-From that mminaiml def file you can build a MINIMAL sandbox and install your packages manuall - hammering out the issues of your %post section in one go:
+1. From that minimal def file you can build a MINIMAL sandbox and install your packages manually - hammering out the issues of your %post section in one go:
 ```bash
 apptainer build --sandbox Singularity_Workshop MINAIMAL.def
 apptainer shell --writable Singularity_Workshop
 ```
-
-Or - assuming that the Singularity_Workshop sandbox was built correctly we now can use that sandbox to install the packages that we need for our daily work:
-
+2. You can test your run script using this folder
 ```bash
-apptainer shell --writable Singularity_Workshop
+apptainer run Singularity_Workshop
 ```
 
+The sandbox will also help you to install your other packages. I do not assume you are used to alpine linux - or?
 Install the software you need and do not forget to add all working install steps to the def file, too.
 This way all later builds will already have your modifications in it!
 
