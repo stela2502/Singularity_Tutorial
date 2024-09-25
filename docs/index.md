@@ -80,7 +80,7 @@ For this workshop, we will use the open COSMOS system to build our Apptainer ima
 To get started, you'll need to [download ThinLink](https://www.cendio.com/thinlinc/download/) and log into open COSMOS at ``cosmos-dt.lunarc.lu.se``.
 
 Building an apptainer image does need superuser rights or at least some elevated rights on the system.
-IThis means that on most HPC platforms, even if they support Singularity/Apptainer, you won't be able to build an image directly due to restricted permissions.
+This means that on most HPC platforms, even if they support Singularity/Apptainer, you won't be able to build an image directly due to restricted permissions.
 
 
 To overcome this limitation, we developed an Apptainer image called [ImageSmith](https://github.com/stela2502/ImageSmith), which has Apptainer installed inside it. This allows you to build Apptainer images without needing superuser rights.
@@ -121,7 +121,7 @@ After submission, you will receive the PID of the SLURM job. To view the process
 watch cat <PID>
 ```
 In the output, you will find a web link to access the image. Look for lines similar to:
-```bash
+```text
 ...
 
 [C 2024-09-16 10:33:26.138 ServerApp]
@@ -144,7 +144,7 @@ When designing your Apptainer HPC image, consider how you want to interact with 
 
 1. **A Server Started in the Image**  
    You may want your image to launch a server upon startup, facilitating remote access and interaction.
-   We will not cover that esplicitly here.
+   We will not cover that esplicitly here and use the Jupyter lab server instead.
 
 2. **Command Line Tools Only**  
    For those who ONLY rely on command line tools I recommand to create a script that handles the apptainer loading (incluiding all binds and other apptainer options) and make that script available as a command if you load the Lua module. We will not cover this version here, but you can look into my [Rustody_image github Repo](https://github.com/stela2502/Rustody_image) if you are interested.
@@ -165,7 +165,7 @@ This allows for interaction with command line tools as well as interactive usage
 
 ## Additional Considerations
 
-Unfortunately due to Apptainer internals we are restricted to build the same system as the ImageSmith is based on. So we need to stick with alpine:latest for now.
+Unfortunately due to Apptainer internals and the user rights on COSMOS we are restricted to build the same system as the ImageSmith is based on. So we need to stick with alpine:latest for now.
 
 ## Example
 
@@ -242,7 +242,7 @@ Let's go back to the ImageSmith to build an image based on this definition:
 Jupyter lab allows you to create a folder using the graphical iterface, but you could also use the Terminal:
      
 ```sh
-mkdir mkdir Singularity_Workshop
+mkdir Singularity_Workshop
 cd Singularity_Workshop
 ```
 
@@ -257,7 +257,7 @@ vi Singularity_Workshop.def
 ```
 Paste the copied text with the middle mouse button and save & close vi session with ``:x``.
 
-I recommend you to use the Jupyter lab interface instead: You can create a new file in the folder using the large plus sign beneth the create folder icon. You can then select Other -> Text file in the main window and copy the text into the new file; save it as "Singularity_Workshop.def".
+As the vi tool is speical I recommend you to use the Jupyter lab interface instead: You can create a new file in the folder using the large plus sign beneth the create folder icon. You can then select Other -> Text file in the main window and copy the text into the new file; save it as "Singularity_Workshop.def".
 
 ### Build an Apptainer sandbox
 
@@ -294,7 +294,7 @@ You should keep the %environment and the %runscript as this will allow you to (1
 apptainer build --sandbox Singularity_Workshop MINAIMAL.def
 apptainer shell --writable Singularity_Workshop
 ```
-2. You can test your run script using this folder
+2. After you have installed everything - including the jupyter lab server you can test the final funtionality with:
 ```bash
 apptainer run Singularity_Workshop
 ```

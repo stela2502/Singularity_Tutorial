@@ -1,0 +1,38 @@
+bootstrap: docker
+From: alpine:latest
+
+%post
+    # Update the package index and install essential packages
+    # The commands here are the same as you would use inside the system to install ppackaged if you are root
+    apk update
+
+    # Install build tools and libraries required for Python and R
+    # You must not have comments after the '\' in the following lines!
+    # E.g. ChattGPT likes to add them.
+    apk add --no-cache bash \
+        build-base \
+        zeromq-dev \
+        libffi-dev \
+        musl-dev \
+        openblas-dev \
+        python3 \
+        py3-pip \
+        python3-dev \
+        py3-setuptools \
+        py3-wheel 
+
+    # Allow pip to modify system-wide packages
+    export PIP_BREAK_SYSTEM_PACKAGES=1
+
+    # Install JupyterLab using pip
+    pip3 install --no-cache-dir jupyterlab
+
+%environment
+    # Ensure /usr/local/bin is in the PATH so JupyterLab can be found
+    export PATH="/usr/local/bin:$PATH"
+    # if you want to install more python packages in the sandbox:
+    export PIP_BREAK_SYSTEM_PACKAGES=1
+
+%runscript
+    # By default, run JupyterLab when the container starts
+    jupyter lab --port 9734 --ip=0.0.0.0 --allow-root --no-browser

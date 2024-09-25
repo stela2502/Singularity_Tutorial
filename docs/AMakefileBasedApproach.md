@@ -6,10 +6,10 @@ The goal is to establish a structure where both the Apptainer build and deployme
 
 ## What is a Makefile?
 
-A Makefile is a special file used by the ``make`` utility to automate the building and management of software projects. It defines a set of rules and dependencies for compiling code, linking files, and generating executables or other targets. Makefiles consist of targets, dependencies, and commands that describe how to build each part of the project. Typically, they are used in environments with many files, like C/C++ projects, where manual compilation would be cumbersome. We do not need to dive into the depth of that - just the targets will be used for the automatisation. I will not go into detail here, as the ImageSmith has my implementation of that idea installed as a script:
+A Makefile is a special file used by the ``make`` utility to automate the building and management of software projects. It defines a set of rules and dependencies for compiling code, linking files, and generating executables or other targets. Makefiles consist of targets, dependencies, and commands that describe how to build each part of the project. Typically, they are used in environments with many files, like C/C++ projects, where manual compilation would be cumbersome. We do not need to dive into the depth of that - just the targets will be used for the automatisation. I will not go into more detail later - the ImageSmith has my implementation of that idea installed as a script. Use it.
 
 ```bash
-/opt/ImageSmith/create_new_image_builder.sh <new_directory_name>
+/opt/ImageSmith/create_new_image_builder.sh <path_to>/<project_name>
 ```
 
 Running this will create a folder and populate it with a Makefile, a default definition file and three scripts; ``shell.sh``, ``run.sh`` and ``generate_module.sh``. 
@@ -40,15 +40,20 @@ The Makefile is the central organizer of this whole package. The ``generate_modu
 
 ## How to Use This Package
 
-After creating a new Apptainer image project, all scripts and the Makefile will be updated with your project name. To build a standard Bioinformatics Apptainer image, run:
+The package path you have now uses the Bioinformatics minimal definition file to install R and Python and to make them accessible using the Jupyter lab server. You can simply replace it's contents with the defintion file you have prepared in the last step.
 
+
+To build your own project now you can somply run:
 ```bash
-/opt/ImageSmith/create_new_image_builder.sh <path_to>/<project_name>
-make -C <path_to><project_name>
+make -C <path_to>/<project_name>
+```
+or 
+```bash
+cd <path_to>/<project_name>
+make
 ```
 
-This will use the Bioinformatics minimal definition file to install R and Python and to make them accessible using the Jupyter lab server.
-The deploy step is tailored to my development environment where I mount the COSMOS-SENS shared folder in ~/sens05_shared/. When you also do that on your own computer you can deploy the image directly to COMSOS_SENS. At the moment the ``deploy`` will create a path in your home and build a module for COSMOS there. 
+The deploy step is currently tailored to my development environment where I mount the COSMOS-SENS shared folder ``/scale/gr01/shared`` in ~/sens05_shared/. When you also do that on your own computer you can deploy the image directly to COMSOS_SENS. At the moment the ``deploy`` will create a path in your home and build a module for COSMOS there. 
 On open COSMOS we can not mount COSMOS-SENS and therfore the deploy will create the local folder and place the module there.
 This module will work as is if you copy the ``software/<package_name>/<version>/*`` and ``module/<package_name>/<version>.lua`` files and folders to the respective COSMOS-SENS path ``/scale/gr01/shared/common/``.
 
