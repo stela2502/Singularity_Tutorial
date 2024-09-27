@@ -6,3 +6,4 @@ nav:
   - Build an Apptainer image: index.md
   - Set up a Lua module: HowToSetUpAModule.md
   - A Makefile based approach: AMakefileBasedApproach.md
+  - The ImageSmith: RunThroughImageSmith.md

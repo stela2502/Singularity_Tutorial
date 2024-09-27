@@ -112,7 +112,7 @@ git init
 Add the files you want to upload to the staging area:
 
 ```bash
-git add . --all
+git add --all .
 ```
 
 ### Step 4: Commit Your Changes
