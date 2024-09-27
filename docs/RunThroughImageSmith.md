@@ -14,7 +14,9 @@ You will not learn about Apptainer definition files or any other Apptainer speci
 
 ImageSmith has access to my [ImageBlueprint](https://github.com/stela2502/ImageBlueprint) package. The main idea behind this package is to quickly create an Apptainer project using:
 
-<script>create_new_image_builder.sh <path_to>/<project_name></script>
+```bash
+create_new_image_builder.sh <path_to>/<project_name>
+```
 
 The image will be prepared in the new folder. Out of the box, this image will support a Jupyter Lab web server, which acts as the main interaction point with the image once it is 'run'.
 
@@ -42,24 +44,32 @@ But as you run the ImageSmith module on the compute nodes, you have access to th
 
 You can create your new project like this:
 
-<script>create_new_image_builder.sh $SNIC_TMP/MyCoolProject</script>
+```bash
+create_new_image_builder.sh $SNIC_TMP/MyCoolProject
+```
 
 The easiest way to interact with, for example, the definition file using ImageSmith is through the Jupyter Lab interface. Therefore, it is necessary to access the new files from the Jupyter Lab interface, and hence you should create a link from your (Jupyter) work directory to the `$SNIC_TMP`:
 
-<script>ln -s $SNIC_TMP work</script>
+```bash
+ln -s $SNIC_TMP work
+```
 
 Then you can open the `work/MyCoolProject.def` file using the Jupyter Lab interface. This makes it much easier to modify compared to the `vi` editor, which is also installed in ImageSmith.
 
 Once your definition file contains what you want, you can easily deploy the new image to your home directory (if the image can be built) by stating:
 
-<script>make -C work/MyCoolProject</script>
+```bash
+make -C work/MyCoolProject
+```
 
 ## Where Is My Module Now?
 
 The module has been deployed to your home directory:
 
-<script>~/sens5_shared/common/modules/<project_name>/1.0.lua</script>
-<script>~/sens5_shared/common/software/<project_name>/1.0/<project_name>.1.0.sif</script>
+```bash
+~/sens5_shared/common/modules/<project_name>/1.0.lua
+~/sens5_shared/common/software/<project_name>/1.0/<project_name>.1.0.sif
+```
 
 The result of your work has been saved to your home folder, but your definition file is still only in the `$SNIC_TMP`. Instead of copying the definition file to your home folder, I recommend uploading it to Git. This way, you can easily access your work from outside Open COSMOS, too.
 
@@ -69,7 +79,7 @@ You could, of course, copy the whole building area to your home directory, but i
 
 Instead of copying the sandbox and image files, I recommend you create a new Git project and upload your definition files, scripts, and Makefile to either GitHub or any other Git server.
 
-The Blueprint has already created a `.gitignore` in the path that will exclude both the sandbox and the image from being uploaded to Git.
+The Blueprint includes a `.gitignore` in the path that will exclude both the sandbox and the image from being uploaded to Git.
 
 ## A Tiny GitHub Tutorial
 
@@ -87,38 +97,53 @@ Here’s a quick guide on how to create a new GitHub repository and upload your 
 
 Open a terminal and navigate to your project directory:
 
-<script>cd $SNIC_TMP/MyCoolProject</script>
+```bash
+cd $SNIC_TMP/MyCoolProject
+```
 
 Initialize a new Git repository:
 
-<script>git init</script>
+```bash
+git init
+```
 
 ### Step 3: Add Your Files
 
 Add the files you want to upload to the staging area:
 
-<script>git add .</script>
+```bash
+git add . --all
+```
 
 ### Step 4: Commit Your Changes
 
 Commit your changes with a meaningful message:
 
-<script>git commit -m "Initial commit with project files"</script>
+```bash
+git commit -m "Initial commit with project files"
+```
 
 ### Step 5: Link to Your GitHub Repository
 
 Copy the URL of your new GitHub repository (found on the repository page) and link it to your local repository:
 
-<script>git remote add origin <repository_url></script>
+```bash
+git remote add origin <repository_url>
+```
 
 Replace `<repository_url>` with the actual URL, for example:
 
-<script>git remote add origin https://github.com/username/MyCoolProject.git</script>
+```bash
+git remote add origin https://github.com/username/MyCoolProject.git
+```
 
 ### Step 6: Push Your Changes to GitHub
 
 Finally, push your changes to the master branch of your GitHub repository:
 
-<script>git push -u origin master</script>
+```bash
+git branch -M main
+git push -u origin main
+```
 
 Now your project is safely stored in your GitHub repository, and you can access it from anywhere!
