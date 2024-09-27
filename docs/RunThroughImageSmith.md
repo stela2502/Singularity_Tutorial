@@ -67,8 +67,8 @@ make -C work/MyCoolProject
 The module has been deployed to your home directory:
 
 ```bash
-~/sens5_shared/common/modules/<project_name>/1.0.lua
-~/sens5_shared/common/software/<project_name>/1.0/<project_name>.1.0.sif
+~/sens05_shared/common/modules/<project_name>/1.0.lua
+~/sens05_shared/common/software/<project_name>/1.0/<project_name>.1.0.sif
 ```
 
 The result of your work has been saved to your home folder, but your definition file is still only in the `$SNIC_TMP`. Instead of copying the definition file to your home folder, I recommend uploading it to Git. This way, you can easily access your work from outside Open COSMOS, too.
@@ -77,7 +77,7 @@ The result of your work has been saved to your home folder, but your definition 
 
 You could, of course, copy the whole building area to your home directory, but it is a lot of data and might not fit into your Lunarc allowance if you have no data project registered there.
 
-Instead of copying the sandbox and image files, I recommend you create a new Git project and upload your definition files, scripts, and Makefile to either GitHub or any other Git server.
+Instead of copying the sandbox and image files, I recommend you create a new Git project and upload your definition files, scripts, and Makefile to either GitHub or any other Git server. The sandbox can be regenerated from the image and the image is already saved to your home folder.
 
 The Blueprint includes a `.gitignore` in the path that will exclude both the sandbox and the image from being uploaded to Git.
 
