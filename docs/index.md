@@ -202,32 +202,32 @@ From: alpine:latest
 
 2\. **Post Section**: This section contains commands that are executed in the container environment after it is created. 
     It can include installation commands and other configuration steps.
-```
+```text
 %post
     apt-get update && apt-get install -y python3
 ```
 
 3\. **Environment Section**: This section allows you to set environment 
     variables within the container.
-```
+```text
 %environment
     export PATH=/usr/local/bin:$PATH
 ```
 
 4\. **Run Section**: This section specifies commands that should be executed when the container is run.
-```
+```text
 %run
     python3 myscript.py
 ```
 
 5\. **Files Section**: Use this section to include files into the container. 
-```
+```text
 %files
     ./myscript.py /usr/local/bin/myscript.py
 ```
 
 6\. **Label Section**: This optional section allows you to add metadata to your container.
-```
+```text
 %labels
     Author: Your Name
     Version: 1.0
