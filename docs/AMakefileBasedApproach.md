@@ -15,7 +15,7 @@ A Makefile is a special file used by the ``make`` utility to automate the buildi
 
 ## Quickly create a Apptainer image from a Blueprint
 
-The ImageSmith has my implementation of of the automatization ([ImageBlueprint](https://github.com/stela2502/ImageBlueprint)) installed as a script:
+The ImageSmith has my implementation of the automatization ([ImageBlueprint](https://github.com/stela2502/ImageBlueprint)) installed as a script:
 
 ```bash
 create_new_image_builder.sh <path_to>/<project_name>
@@ -35,14 +35,17 @@ The Makefile is the central organizer of this whole package. The ``generate_modu
         Key command: ``sudo apptainer build --sandbox $(SANDBOX_DIR) $(DEFINITION_FILE)``
 
    3. ``build``:
-    This target builds the final Singularity image ``$(IMAGE_NAME)`` from the sandbox. The image is based on the sandbox. This is in theory not necessary if you update your definition file. I recommend to add all changes you apply to the sandbox to the definition file, too! But I do not always adhere to that philosophy...
+    This target builds the final Singularity image ``$(IMAGE_NAME)`` from the sandbox. The image is based on the sandbox. This is in theory not necessary if you update your definition file. I recommend to add all changes you apply to the sandbox to the definition file, too! But I do not always adhere to that philosophy.
         Key command: ``sudo apptainer build $(IMAGE_NAME) $(SANDBOX_DIR)``
+   4. ``direct``:
+    This target skipps the restart and builds the image directly from the defintion file.
+        Key command: ``sudo apptainer build $(IMAGE_NAME) $(DEFINITION_FILE)``
 
-   4. ``deploy``:
+   5. ``deploy``:
     This target copies the final image to the specified deployment directory ``$(DEPLOY_DIR)`` and creates the Lua defintion file based on the informations in the Makefile and the Lua outline in the ``generate_module.sh`` script. This is useful for moving the image to a location where it can be accessed and used by others.
         Key command: ``cp $(IMAGE_NAME) $(DEPLOY_DIR)``
 
-   5. ``clean``:
+   6. ``clean``:
     This target removes the sandbox directory and the image file. It's useful for cleaning up your workspace if you need to start fresh or if you're done with the current build.
         Key command: ``rm -rf $(SANDBOX_DIR) $(IMAGE_NAME)``
 
