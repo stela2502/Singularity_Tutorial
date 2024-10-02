@@ -59,6 +59,9 @@ family("images")
 --
 ```
 
+The file on COSMOS looks different - use the one on COSMOS instead. The difference to the one here is that in the official file the bind path is set up to run on either open COSMOS, COSMOS-SENS or your local development machine without the need to adjust the Apptainer bind setting.
+
+
 ## Explanation of Lua Module Definition
 
 This Lua module definition file provides a wrapper for loading and unloading an Apptainer/Singularity container.
@@ -76,6 +79,7 @@ This Lua module definition file provides a wrapper for loading and unloading an 
 3. **Singularity Command Execution on Load:**
    The core of the script is the command executed when the module is loaded. It runs the Singularity container (`ImageSmith_v1.0.sif`) with the `singularity run --cleanenv` command, which strips the environment variables to avoid conflicts. The command is as follows:
    ```execute{cmd="singularity run --cleanenv ".. base.. "/ImageSmith_v".. version ..".sif",modeA={"load"}}```
+   ``--cleanenv``: Ensures that the environment variables are cleaned up, avoiding potential conflicts with the host environment. And the ``-B`` option allows specific directories from the host system to be bound to the container, making them accessible within the container.
    The `modeA={"load"}` ensures this command is executed only when the module is loaded.
 
 4. **Unloading Section (Commented Out):**
@@ -133,8 +137,8 @@ module spider module_name
 module load module_name/version
 ```
 
-But this folder is not mounted on the open COSMOS. And we do not have a common folder on open COSMOS either.
-Therefore - to test your image we need a private module folder:
+**But this folder is not mounted on the open COSMOS.** And we do not have a common folder on open COSMOS either.
+Therefore - to test your image - we need a private module folder:
 
 ```bash
 mkdir -p ~/sen05_shared/common/software
