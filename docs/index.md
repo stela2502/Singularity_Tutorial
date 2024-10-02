@@ -35,7 +35,7 @@ From: alpine:latest
 
     # Install build tools and libraries required for Python and R
     # You must not have comments after the '\' in the following lines!
-    # E.g. ChattGPT likes to add them.
+    # E.g. ChatGPT likes to add them.
     apk add --no-cache bash \
         build-base \
         zeromq-dev \
@@ -92,9 +92,9 @@ apptainer shell --writable MyPackage
 Where you can now install your own software using the usual methods. After this you can test it, and then build a .sif image, but this is something that we will cover later.
 
 
-While it is technically possible for you to install Apptainer on your own computer, doing so would introduce unnecessary complexity to the course. Installing Apptainer requires administrative (super user) rights, which can be a challenge if your computer is managed by your institution, such as LU. Additionally, each operating system (Linux, Windows, macOS) has its own specific installation steps, and supporting all platforms would take us beyond the focus of this workshop.
+While it is ***technically possible*** for you to install Apptainer on your own non-Linux computer, doing so would introduce unnecessary complexity to this workshop. Installing Apptainer requires administrative (super user) rights, which can be a challenge if your computer is managed by your institution, such as LU. Additionally, each operating system (Linux, Windows, macOS) has its own specific installation steps, and supporting all platforms would take us beyond the focus of this workshop.
 
-Instead, we will be using the open COSMOS system to build the images. While you may not have super user rights there either, Apptainer is already installed, and we've developed a method to use an existing Apptainer image to build new ones. This allows us to work efficiently within the system provided, without needing to deal with the complexities of local installations.
+Instead, we will be use **open COSMOS** to build our images. While you may not have super user rights there either, Apptainer is already installed, and we've developed a method to use an existing Apptainer image to build new ones. This allows us to work efficiently within the system provided, without needing to deal with the complexities of local installations.
 
 
 ## Building Apptainer images for COSMOS-SENS on open COSMOS
@@ -102,11 +102,11 @@ Instead, we will be using the open COSMOS system to build the images. While you 
 For this workshop, we will use the open COSMOS system to build our Apptainer images.
 To get started, you'll need to [download ThinLink](https://www.cendio.com/thinlinc/download/) and log into open COSMOS at ``cosmos-dt.lunarc.lu.se``.
 
-Building an apptainer image needs superuser rights or at least some elevated rights on the system.
-This means that on most HPC platforms, even if they support Singularity/Apptainer, you won't be able to build an image directly due to restricted permissions.
+Building an apptainer image needs superuser rights, or at least some elevated rights on the system.
+This means that on most HPC platforms (even if they support Singularity/Apptainer), you won't be able to build an image directly due to restricted permissions.
 
 
-To overcome this limitation, Stefan had developed an Apptainer image called [ImageSmith](https://github.com/stela2502/ImageSmith), which has Apptainer installed inside it. This allows you to build Apptainer images without needing superuser rights. The ImageSmith image is based on Alpine Linux, chosen for its ability to create slim, efficient images. It has already been installed as a module on COSMOS which you can load with the following command:
+To overcome this limitation, Stefan has developed an Apptainer image called [ImageSmith](https://github.com/stela2502/ImageSmith), which has Apptainer installed inside it. *So yes, we're going to generate images from an image!* This allows you to build Apptainer images without needing superuser rights. The ImageSmith image is based on Alpine Linux, chosen for its ability to create slim, efficient images. It has already been installed as a module on COSMOS which you can load with the following command:
 
 ```bash
 module load ImageSmith/1.0
@@ -336,7 +336,7 @@ Or after you have added all manual steps into the def file:
 apptainer build Singularity_Workshop.sif Singularity_Workshop.def
 ```
 
-That is the bare bone of image creation.
+That is the bare bones of image creation.
 
 But [how do we add this Apptainer image as a COSMOS-SENSE module](HowToSetUpAModule.md)?
 
