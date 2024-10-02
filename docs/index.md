@@ -193,42 +193,45 @@ Unfortunately due to Apptainer internals and the user rights on COSMOS we are re
 
 An Apptainer definition file is a key component for creating containers with Apptainer. This file defines the environment, software, and configuration necessary for your container. Here’s a brief overview of its structure:
 
-1. **Header Section**: This includes the `Bootstrap` and `From` directives, which specify the method and base image for the container.
-    ```shell
-    Bootstrap: docker
-    From: alpine:latest
-    ```
+1\. **Header Section**: This includes the `Bootstrap` and `From` directives,
+    which specify the method and base image for the container.
+```text
+Bootstrap: docker
+From: alpine:latest
+```
 
-2. **Post Section**: This section contains commands that are executed in the container environment after it is created. It can include installation commands and other configuration steps.
-    ```shell
-    %post
-        apt-get update && apt-get install -y python3
-    ```
+2\. **Post Section**: This section contains commands that are executed in the container environment after it is created. 
+    It can include installation commands and other configuration steps.
+```
+%post
+    apt-get update && apt-get install -y python3
+```
 
-3. **Environment Section**: This section allows you to set environment variables within the container.
-    ```shell
-    %environment
-        export PATH=/usr/local/bin:$PATH
-    ```
+3\. **Environment Section**: This section allows you to set environment 
+    variables within the container.
+```
+%environment
+    export PATH=/usr/local/bin:$PATH
+```
 
-4. **Run Section**: This section specifies commands that should be executed when the container is run.
-    ```shell
-    %run
-        python3 myscript.py
-    ```
+4\. **Run Section**: This section specifies commands that should be executed when the container is run.
+```
+%run
+    python3 myscript.py
+```
 
-5. **Files Section**: Use this section to include files into the container. 
-    ```shell
-    %files
-        ./myscript.py /usr/local/bin/myscript.py
-    ```
+5\. **Files Section**: Use this section to include files into the container. 
+```
+%files
+    ./myscript.py /usr/local/bin/myscript.py
+```
 
-6. **Label Section**: This optional section allows you to add metadata to your container.
-    ```shell
-    %labels
-        Author: Your Name
-        Version: 1.0
-    ```
+6\. **Label Section**: This optional section allows you to add metadata to your container.
+```
+%labels
+    Author: Your Name
+    Version: 1.0
+```
 
 
 ## Example
@@ -299,7 +302,7 @@ From: alpine:latest  # Use the latest Alpine Linux image as the base
 
 ```
 
-You see that some of Apptainers capabilities have not been used here: %setup, %files, %info and %help have all been omitted.
+You see that some of Apptainers capabilities have not been used here: %files and %labels have all been omitted.
 But for the time being this is enough - let's go back to the ImageSmith to build an image based on this definition:
 
 ### Create a new directory
