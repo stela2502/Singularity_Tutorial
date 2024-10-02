@@ -193,40 +193,51 @@ Unfortunately due to Apptainer internals and the user rights on COSMOS we are re
 
 An Apptainer definition file is a key component for creating containers with Apptainer. This file defines the environment, software, and configuration necessary for your container. Here’s a brief overview of its structure:
 
-1\. **Header Section**: This includes the `Bootstrap` and `From` directives,
+<p style="text-indent: -1em; padding-left: 1em;">
+1. <b>Header Section</b>: This includes the `Bootstrap` and `From` directives,
     which specify the method and base image for the container.
+</p>
 ```text
 Bootstrap: docker
 From: alpine:latest
 ```
 
-2\. **Post Section**: This section contains commands that are executed in the container environment after it is created. 
+<p style="text-indent: -1em; padding-left: 1em;">
+2. <b>Post Section</b>: This section contains commands that are executed in the container environment after it is created. 
     It can include installation commands and other configuration steps.
+</p>
 ```text
 %post
     apt-get update && apt-get install -y python3
 ```
-
-3\. **Environment Section**: This section allows you to set environment 
+<p style="text-indent: -1em; padding-left: 1em;">
+3. <b>Environment Section</b>b>: This section allows you to set environment 
     variables within the container.
+</p>
 ```text
 %environment
     export PATH=/usr/local/bin:$PATH
 ```
 
-4\. **Run Section**: This section specifies commands that should be executed when the container is run.
+<p style="text-indent: -1em; padding-left: 1em;">
+4. <b>Run Section</b>: This section specifies commands that should be executed when the container is run.
+</p>
 ```text
 %run
     python3 myscript.py
 ```
 
-5\. **Files Section**: Use this section to include files into the container. 
+<p style="text-indent: -1em; padding-left: 1em;">
+5. <b>Files Section</b>: Use this section to include files into the container.
+</p>
 ```text
 %files
     ./myscript.py /usr/local/bin/myscript.py
 ```
 
-6\. **Label Section**: This optional section allows you to add metadata to your container.
+<p style="text-indent: -1em; padding-left: 1em;">
+6. <b>Label Section</b>: This optional section allows you to add metadata to your container.
+</p>
 ```text
 %labels
     Author: Your Name
