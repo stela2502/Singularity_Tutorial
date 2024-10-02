@@ -13,7 +13,7 @@ The `Makefile` is the main interaction point while building the new image, where
 
 A Makefile is a special file used by the ``make`` utility to automate the building and management of software projects. It defines a set of rules and dependencies for compiling code, linking files, and generating executables or other targets. Makefiles consist of targets, dependencies, and commands that describe how to build each part of the project. Typically, they are used in environments with many files, like C/C++ projects, where manual compilation would be cumbersome. We do not need to dive into the depth of that - just the targets will be used for the automatisation. I will not go into more detail later.
 
-## Quickly create a Apptainer image from a Blueprint
+## Quickly create an Apptainer image from a Blueprint
 
 The ImageSmith has my implementation of the automatization ([ImageBlueprint](https://github.com/stela2502/ImageBlueprint)) installed as a script:
 
@@ -37,6 +37,7 @@ The Makefile is the central organizer of this whole package. The ``generate_modu
    3. ``build``:
     This target builds the final Singularity image ``$(IMAGE_NAME)`` from the sandbox. The image is based on the sandbox. This is in theory not necessary if you update your definition file. I recommend to add all changes you apply to the sandbox to the definition file, too! But I do not always adhere to that philosophy.
         Key command: ``sudo apptainer build $(IMAGE_NAME) $(SANDBOX_DIR)``
+        
    4. ``direct``:
     This target skipps the restart and builds the image directly from the defintion file.
         Key command: ``sudo apptainer build $(IMAGE_NAME) $(DEFINITION_FILE)``
@@ -243,10 +244,13 @@ Of casue you can also commend out the changes and re-enact the original base var
 We have already uploaded the defintion to GitHub.
 Therfore you can easily clone that on your normal desktop, install apptainer there and build and deploy your image from your normal desktop to COSMOS-SENS.
 
-If you want to use the image prepared on open COSMOS I recommend you to tar your deploy data structure (all in `~/sens05_share/common/`) and copy that to COSMOS-SENS using e.g. `scp`. Cou can soimply untar that in `/scale/gr01/shared/common/`. But make sure you only copy the module you want.
+If you want to use the image prepared on open COSMOS I recommend you to tar your deploy data structure (all in `~/sens05_share/common/`) and copy that to COSMOS-SENS using e.g. `scp`. You can simply untar that in `/scale/gr01/shared/common/`. But make sure you only copy the module you want.
+
+
 
 Please document your images well, upload them to COSMOS-SENS and share them with us. I hope we all can easen our workloads by sharing!
 While you are at it you can check out my SingSingCell/1.6 package that provides a single cell analysis environment with Seurat, scanpy, scvelo and other tools installed ([on github](https://github.com/stela2502/singularityImages) this is pre ImageSmith). 
+
 
 Please remove your `~/sens05_shared` folder once you are finished - you have saved all your work on github already.
 

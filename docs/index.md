@@ -8,9 +8,9 @@ Containers encapsulate software environments, including libraries, dependencies,
 
 ## Why use Apptainer/Sigularity
 
-1. **Containers are safe from external changes.** Remember when R 4.4 was deemed unsafe and LU automatically updated R without warning and destroyed your previous workflow? If your setup was Apptainer based then this would not be affected.
+1. **Containers are safe from external changes.** Remember when R 4.4 was deemed unsafe and LU automatically updated R without warning and destroyed your previous workflow? If your setup was Apptainer based then it would not have been affected.
 
-2. **Reproducibility** Workflows will give a result, but changing the workflow (even updating packages) may lead to differences. To make results reproducilble it makes sense to have an image of your workflow that cannot change. This would be useful for future labmates when you leave the lab, but still need to use your workflows.
+2. **Reproducibility** The results from your workflow can sometimes change by simply updating a package in the workflow. To make results really reproducilble it makes sense to have an image of your workflow that cannot change. This would be useful for future labmates when you leave the lab, but still need to use your exact workflows.
 
 3. **Installing own software on COSMOS-SENS**. LUNARC are happy to install software, but sometimes some python packages are a pain to install. Apptainer provides a way to bundle the tools and packages you need for your analysis in one place and install them on you HPC system without the help of anybody while using the same software both on your development machine as well as on the HPC platform.
 
@@ -20,9 +20,9 @@ Containers encapsulate software environments, including libraries, dependencies,
 
 Building an Apptainer image from start to finish can be summarized in three main steps:
 
-1. Create a defintion file
-
-    Save this text in a definition file like "MyPackage.def".
+**1. Create a defintion file**
+Save this text in a definition file like "MyPackage.def".
+    
 ```text
 # Which operating system should be used as a basis for this image
 bootstrap: docker
@@ -64,11 +64,15 @@ From: alpine:latest
     # By default, run JupyterLab when the container starts
     jupyter lab --port 9734 --ip=0.0.0.0 --allow-root --no-browser
 ```
-2. Build the image
+
+**2. Build the image**
+
 ```bash
 apptainer build MyPackage.sif MyPackage.def
 ```
-3. Start the image
+
+**3. Start the image**
+
 ```bash
 apptainer run MyPackage.sif
 ```
@@ -79,7 +83,7 @@ This gives you a barebones Linux image with a few essential things installed. In
 apptainer build --sandbox MyPackage MyPackage.def
 ```
 
-This will create a folder `MyPackage` which you can then shell into:
+You can 'shell' into the created `MyPackage` folder:
 
 ```bash
 apptainer shell --writable MyPackage
