@@ -1,4 +1,4 @@
-# How to set up an Apptainer image as a COSMOS-SENSE module
+# How to set up an Apptainer image as a COSMOS module
 
 In an COSMOS, the module system is used to manage software packages. It allows users to dynamically load and unload specific software environments without affecting the entire system. Modules are defined through Lua scripts, which specify environment variables, dependencies, and version control for different software. 
 
@@ -27,7 +27,6 @@ And then look into the Lua definition file:
 ```bash
 cat /sw/easybuild_milan/modules/all/Core/ImageSmith/1.0.lua
 ```
-
 ```text
 help([[This module is an example Singularity Image prowiding  
        a 'naked' Python Jupyter Lab interface to both Python and R ]])
@@ -134,20 +133,29 @@ module spider module_name
 module load module_name/version
 ```
 
+But this folder is not mounted on the open COSMOS. And we do not have a common folder on open COSMOS either.
+Therefore - to test your image we need a private module folder:
+
+```bash
+mkdir -p ~/sen05_shared/common/software
+mkdir -p ~/sen05_shared/common/modules
+```
+
+Please use this loaction - it will be used later on, too.
+
 To register a module you need to create a folder with the same name (the package's name) in both the ``modules`` and ``software`` folders.
 Software will be installed into a ``software/<package_name>/<version>/`` directory whereas the Lua definition of the software will reside in the file ``modules/<package_name>/<version>.lua``.
 
-I am no master of the module system and can only help you a litlle here.
-
-As a starter only need to replace the module description and the paths in the Lua description file we got from the ImageSmith Apptainer module:
+As a starter you only need to replace the module description and the paths in the Lua description file we got from the ImageSmith Apptainer module:
 
 ```text
 
 help([[This module is an example Singularity Image prowiding
        a 'naked' Python Jupyter Lab interface to both Python and R ]])          
                                                             
-local version = 1.0                                                      
-local base = pathJoin("/scale/gr01/shared/common/software/Singularity_Workshop/1.0") 
+local version = 1.0
+local home=os.getenv( "HOME" )
+local base = pathJoin(home,"/sens05_shared/common/software/Singularity_Workshop/1.0") 
                                                                                 
                                                
 -- this happens at load                                                        
@@ -163,7 +171,7 @@ whatis("Category     : Image")
 whatis("Description  : Singularity image providing Python and R and a jupyter lab")
 whatis("Installed on : 17.09.2024 ")                                   
 whatis("Modified on  : --- ")                                                   
-whatis("Installed by : Stefan Lang")                                             
+whatis("Installed by : Me")                                             
                                                                                 
 family("images")                                                                
 
@@ -175,9 +183,27 @@ family("images")
 -- 
 
 ```
-This file needs to go to ``/scale/gr01/shared/common/modules/Singularity_Workshop/1.0.lua`` and the image
-needs to be copied to ``/scale/gr01/shared/common/software/Singularity_Workshop/1.0/Singularity_Workshop_v1.0.sif``.
 
-Of cause the module name `Singularity_Workshop`  will not be available for all of you due to user access rights restrictions on our shared folders. We all need to use different folders respectively package names in the modules and software folder.
+Create this file in ``~/sens05_shared/shared/common/modules/Singularity_Workshop/1.0.lua`` and copy the image file you have created in the last step to ``/scale/gr01/shared/common/software/Singularity_Workshop/1.0/``.
 
-In other words, you will need to rename your module. I often forget to change the module name or version in one or more places (in an apptainer call or anywhere in the Lua module). And therfore I have simplified this whole process: I have transitioned from executing commands in the terminal to using[a Makefile based approach](AMakefileBasedApproach.md).
+You now all have a module path that you can activate using 
+
+```bash
+module use ~/sens05_shared/shared/common/modules
+```
+
+You can start your module using the common command
+```bash
+module load  Singularity_Workshop/1.0
+```
+
+# Module Names are Unique
+
+On COSMOS-SENS we have a common folder where you can 'publish' your modules for all users of COSMOS-SENS's **sens-gr01** group.
+```bash
+/scale/gr01/shared/common/modules
+```
+
+By default all of you can create modules there. But you can not modify modules of other users.
+
+In other words, you will need to rename your module. I have simplified the creation and maintainance of Apptainer modules by transitioning from executing commands in the terminal to using [a Makefile based approach](AMakefileBasedApproach.md).
