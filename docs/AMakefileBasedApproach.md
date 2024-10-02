@@ -75,12 +75,12 @@ The easiest way to interact with, for example, the definition file using ImageSm
 ln -s $SNIC_TMP work
 ```
 
-Then you can open the `work/MyCoolProject.def` file using the Jupyter Lab interface. This makes it much easier to modify compared to the `vi` editor, which is also installed in ImageSmith.
+Then you can open the `work/MyCoolProject/MyCoolProject.def` file using the Jupyter Lab interface. This makes it much easier to modify compared to the `vi` editor, which is also installed in ImageSmith.
 
 Once your definition file contains what you want, you can easily deploy the new image to your home directory (if the image can be built) by stating:
 
 ```bash
-make -C work/MyCoolProject
+make -C $SNIC_TMP/work/MyCoolProject
 ```
 
 ## Where Is My Module Now?
@@ -92,11 +92,11 @@ The module has been deployed to your home directory:
 ~/sens05_shared/common/software/<project_name>/1.0/<project_name>.1.0.sif
 ```
 
-The result of your work has been saved to your home folder, but your definition file is still only in the `$SNIC_TMP`. Instead of copying the definition file to your home folder, I recommend uploading it to Git. This way, you can easily access your work from outside Open COSMOS, too.
+The final image anmd the Lua module file have been saved to your home folder, but your definition file is still only in the `$SNIC_TMP`. Instead of copying the definition file to your home folder, I recommend uploading it to Git. This way, you can easily access your work from outside Open COSMOS, too.
 
-## How to Save Your Work
+## Save Your Work using Git
 
-You could, of course, copy the whole building area to your home directory, but it is a lot of data and might not fit into your Lunarc allowance if you have no data project registered there.
+You could, of course, copy the whole building area to your home directory, but it is a lot of data and might not fit into your Lunarc allowance if you have no data project registered there. 
 
 Instead of copying the sandbox and image files, I recommend you create a new Git project and upload your definition files, scripts, and Makefile to either GitHub or any other Git server. The sandbox can be regenerated from the image and the image is already saved to your home folder.
 
@@ -136,7 +136,14 @@ Add the files you want to upload to the staging area:
 git add --all .
 ```
 
-### Step 4: Commit Your Changes
+### Step 5: Review your checnges
+
+Check that the sandbox folder and the image are not part of the registered files.
+```bash
+git status
+```
+
+### Step 6: Commit Your Changes
 
 Commit your changes with a meaningful message:
 
@@ -144,7 +151,7 @@ Commit your changes with a meaningful message:
 git commit -m "Initial commit with project files"
 ```
 
-### Step 5: Link to Your GitHub Repository
+### Step 7: Link to Your GitHub Repository
 
 Copy the URL of your new GitHub repository (found on the repository page) and link it to your local repository:
 
@@ -158,7 +165,7 @@ Replace `<repository_url>` with the actual URL, for example:
 git remote add origin https://github.com/username/MyCoolProject.git
 ```
 
-### Step 6: Push Your Changes to GitHub
+### Step 8: Push Your Changes to GitHub
 
 Finally, push your changes to the master branch of your GitHub repository:
 
@@ -172,8 +179,7 @@ Now your project is safely stored in your GitHub repository, and you can access 
 ## Test the module on open COSMOS
 
 Now you have your image saved both in your home path as well as on Github.
-Hence we can now look into the function of our image we need to start it:
-
+Hence we can now look into the function of our image; we need to start it:
 
 The first test should be if you can load it directly using apptainer and the helper scripts we have:
 
@@ -187,11 +193,11 @@ $SNIC_TMP/MyCoolProject/run.sh
 You can also test the function of the Lua module on open COSMOS, but for that you need to adjust the path the Lua module expects the image:
 
 Open the created Lua file at ``~/sens05_shared/common/modules/<SANDBOX_DIR>/<VERSION>.lua``.
-You need to comment the line 
+You need to comment the line using the '--' on the line start:
 ```text
 -- local base = pathJoin("/scale/gr01/shared/common/software/<SANDBOX_DIR>/<VERSION>")
 ```
-and add these two lines defining the private location as module source path.
+And add these two lines defining the private location as module source path.
 ```text
 home=os.getenv( "HOME" )
 local base = pathJoin(home,"/sens05_shared/common/software/<SANDBOX_DIR>/<VERSION>")
@@ -203,8 +209,7 @@ Afterwards you can register your personal modules / software folder pair as modu
 ```bash
 module use ~/sens05_shared/common/modules/
 ```
-
-Afterwads you can 'run' your new Apptainer image using 
+Now you are set up to run your own module like this:
 
 ```bash
 module load <SANDBOX_DIR>/<VERSION>
@@ -231,6 +236,7 @@ If you have modified the Lua definition file and now want to copy the image to C
 rm -Rf ~/sens05_shared/common
 make deploy
 ``` 
+Of casue you can also commend out the changes and re-enact the original base variable.
 
 ### Deploy on COSMOS-SENS
 
