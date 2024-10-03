@@ -1,8 +1,8 @@
 # How to set up an Apptainer image as a COSMOS module
 
-In an COSMOS, the module system is used to manage software packages. It allows users to dynamically load and unload specific software environments without affecting the entire system. Modules are defined through Lua scripts, which specify environment variables, dependencies, and version control for different software. 
+The module system on COSMOS is used to manage software packages. It allows users to dynamically load and unload specific software environments without affecting the entire system. Modules are defined through `Lua` scripts, which specify environment variables, dependencies, and version control for different software. 
 
-A valid way to learn about how to load an image in the slurm / module system is to look at the defintion of a working image, e.g. the ImageSmith/1.0 Lua defintion. First we need to find where that definition file is stored on the server:
+A valid way to learn about how to load an image in the slurm/module system is to look at the defintion of a working image, e.g. our ImageSmith/1.0 Lua defintion. First, we need to find where that definition file is stored on the server:
 
 ```bash 
 module show ImageSmith/1.0
@@ -59,7 +59,7 @@ family("images")
 --
 ```
 
-The file on COSMOS looks different - use the one on COSMOS instead. The difference to the one here is that in the official file the bind path is set up to run on either open COSMOS, COSMOS-SENS or your local development machine without the need to adjust the Apptainer bind setting.
+The file on COSMOS looks different TO WHAT? - use the one on COSMOS instead. The difference to the one here is that in the official file the bind path is set up to run on either open COSMOS, COSMOS-SENS or your local development machine without the need to adjust the Apptainer bind setting.
 
 
 ## Explanation of Lua Module Definition
@@ -133,7 +133,8 @@ family("images")
 
 ### Summary
 
-This Lua module definition file:
+This `Lua` module definition file:
+
 - Provides a Singularity image (`ImageSmith_v1.0.sif`) that runs **Python, R, and JupyterLab**.
 - When the module is loaded, it runs the Singularity container using `singularity run --cleanenv`, making it a "clean" environment.
 - Provides metadata about the module (like name, version, and description) for user reference.
@@ -141,9 +142,9 @@ This Lua module definition file:
   
 In essence, it automates loading and executing the Singularity container in an HPC or module-based environment for seamless use of the apptainer system.
 
-## How do we create a module on COSMOS
+## How do we create a module on COSMOS?
 
-The example module was installed by a system administrator. Only them can install into those folders.
+The example module was installed by a system administrator. Only they can install into those folders.
 
 We have a shared folder in COSMOS-SENS ``/scale/gr01/shared/common/`` where we have set up a modules and software folder.
 The modules installed there can be loaded into the module system by issuing:
@@ -167,12 +168,12 @@ mkdir -p ~/sen05_shared/common/software
 mkdir -p ~/sen05_shared/common/modules
 ```
 
-Please use this loaction - it will be used later on, too.
+Please use this location - it will be used later on too.
 
 To register a module you need to create a folder with the same name (the package's name) in both the ``modules`` and ``software`` folders.
 Software will be installed into a ``software/<package_name>/<version>/`` directory whereas the Lua definition of the software will reside in the file ``modules/<package_name>/<version>.lua``.
 
-As a starter you only need to replace the module description and the paths in the Lua description file we got from the ImageSmith Apptainer module:
+As a starter you only need to replace the module description and the paths in the `Lua` description file we got from the ImageSmith Apptainer module:
 
 ```text
 

@@ -392,10 +392,7 @@ Or after you have added all manual steps into the def file:
 apptainer build Singularity_Workshop.sif Singularity_Workshop.def
 ```
 
-That is the bare bones of image creation. You can now copy this image to COSMOS-SENS or any machine with Apptainer/Singularity installed and use the image and software within.
-
-But [how do we add this Apptainer image as a COSMOS-SENSE module](HowToSetUpAModule.md)?
-
+That is the bare bones of image creation. You can now copy this image to COSMOS-SENS or any machine with Apptainer/Singularity installed and use the image and software within. We can now extend this idea further and ponder, [how we can put this image into a module that can be called during a job submission](HowToSetUpAModule.md)?
 
 
 
