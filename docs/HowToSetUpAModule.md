@@ -231,6 +231,4 @@ On COSMOS-SENS we have a common folder where you can 'publish' your modules for 
 /scale/gr01/shared/common/modules
 ```
 
-By default all of you can create modules there. But you can not modify modules of other users.
-
-In other words, you will need to rename your module. I have simplified the creation and maintainance of Apptainer modules by transitioning from executing commands in the terminal to using [a Makefile based approach](AMakefileBasedApproach.md).
+By default all of you can create modules there. But you cannot modify modules of other users. In other words, you will need to rename your module. I have simplified the creation and maintainance of Apptainer modules by transitioning from executing commands in the terminal to using [a Makefile based approach](AMakefileBasedApproach.md).
