@@ -188,9 +188,66 @@ This allows for interaction with command line tools as well as interactive usage
 
 Unfortunately due to Apptainer internals and the user rights on COSMOS we are restricted to build the same system as the ImageSmith is based on. So we need to stick with alpine:latest for now.
 
+
+## Apptainer Definition File Structure
+
+An Apptainer definition file is a key component for creating containers with Apptainer. This file defines the environment, software, and configuration necessary for your container. Here’s a brief overview of its structure:
+
+<p style="text-indent: -1em; padding-left: 1em;">
+1. <b>Header Section</b>: This includes the `Bootstrap` and `From` directives,
+    which specify the method and base image for the container.
+</p>
+```text
+Bootstrap: docker
+From: alpine:latest
+```
+
+<p style="text-indent: -1em; padding-left: 1em;">
+2. <b>Post Section</b>: This section contains commands that are executed in the container environment after it is created. 
+    It can include installation commands and other configuration steps.
+</p>
+```text
+%post
+    apt-get update && apt-get install -y python3
+```
+<p style="text-indent: -1em; padding-left: 1em;">
+3. <b>Environment Section</b>b>: This section allows you to set environment 
+    variables within the container.
+</p>
+```text
+%environment
+    export PATH=/usr/local/bin:$PATH
+```
+
+<p style="text-indent: -1em; padding-left: 1em;">
+4. <b>Run Section</b>: This section specifies commands that should be executed when the container is run.
+</p>
+```text
+%run
+    python3 myscript.py
+```
+
+<p style="text-indent: -1em; padding-left: 1em;">
+5. <b>Files Section</b>: Use this section to include files into the container.
+</p>
+```text
+%files
+    ./myscript.py /usr/local/bin/myscript.py
+```
+
+<p style="text-indent: -1em; padding-left: 1em;">
+6. <b>Label Section</b>: This optional section allows you to add metadata to your container.
+</p>
+```text
+%labels
+    Author: Your Name
+    Version: 1.0
+```
+
+
 ## Example
 
-Here’s how you can obtain a minimal Apptainer definition file for this setup using ChatGPT:
+Here’s how you can obtain a minimal Apptainer definition file for our minimal Bioinformatics setup using ChatGPT:
 
 ```text
 Can you give me a minimal Apptainer def file that builds this minimal system:
@@ -232,7 +289,7 @@ From: alpine:latest  # Use the latest Alpine Linux image as the base
         py3-setuptools \
         py3-wheel 
 
-    # Allow pip to modify system-wide packages
+    # Allow pip to modify system-wide packages (ChatGPT forgets that ALWAYS)
     export PIP_BREAK_SYSTEM_PACKAGES=1
 
     # Install JupyterLab using pip
@@ -256,7 +313,8 @@ From: alpine:latest  # Use the latest Alpine Linux image as the base
 
 ```
 
-Let's go back to the ImageSmith to build an image based on this definition:
+You see that some of Apptainers capabilities have not been used here: %files and %labels have all been omitted.
+But for the time being this is enough - let's go back to the ImageSmith to build an image based on this definition:
 
 ### Create a new directory
 

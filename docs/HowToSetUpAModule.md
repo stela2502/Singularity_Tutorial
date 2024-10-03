@@ -27,7 +27,7 @@ And then look into the Lua definition file:
 ```bash
 cat /sw/easybuild_milan/modules/all/Core/ImageSmith/1.0.lua
 ```
-```text
+```lua
 help([[This module is an example Singularity Image prowiding  
        a 'naked' Python Jupyter Lab interface to both Python and R ]])
 
@@ -68,46 +68,68 @@ This Lua module definition file provides a wrapper for loading and unloading an 
 
 ### Breakdown of the Script
 
-1. **Help Message:**
-   The help message for this module can be accessed when users load the module. It provides a description of what the Singularity image contains, specifically a Python JupyterLab interface with both Python and R support. Here’s the help command:
-   ``help([[This module is an example Singularity Image providing  a 'naked' Python Jupyter Lab interface to both Python and R ]])``
-   This example illustrates the importance of providing a correct and useful help string.
+<p style="text-indent: -1em; padding-left: 1em;">
+1. <b>Help Message</b>: The help message for this module can be accessed when users load the module. It provides a description of what the Singularity image contains, specifically a Python JupyterLab interface with both Python and R support.
+</p>
+```lua
+help([[This module is an example Singularity Image providing  a 'naked' Python Jupyter Lab interface to both Python and R ]])
+```
 
-2. **Local Variables:**
-   Two local variables are defined in the module. The first variable, `version`, defines the version of the image as `1.0`, while the second variable, `base`, specifies the path to the directory where the Singularity image (`ImageSmith_v1.0.sif`) is stored.
+<p style="text-indent: -1em; padding-left: 1em;">
+2. <b>Local Variables</b>: Two local variables are defined in the module. The first variable, `version`, defines the version of the image as `1.0`, while the second variable, `base`, specifies the path to the directory where the Singularity image (`ImageSmith_v1.0.sif`) is stored:
+</p>
+```lua
+local version = "1.0"
+local base = pathJoin("/sw/pkg/ImageSmith/1.0")
+```
 
-3. **Singularity Command Execution on Load:**
-   The core of the script is the command executed when the module is loaded. It runs the Singularity container (`ImageSmith_v1.0.sif`) with the `singularity run --cleanenv` command, which strips the environment variables to avoid conflicts. The command is as follows:
-   ```execute{cmd="singularity run --cleanenv ".. base.. "/ImageSmith_v".. version ..".sif",modeA={"load"}}```
-   ``--cleanenv``: Ensures that the environment variables are cleaned up, avoiding potential conflicts with the host environment. And the ``-B`` option allows specific directories from the host system to be bound to the container, making them accessible within the container.
+<p style="text-indent: -1em; padding-left: 1em;">
+3. <b>Singularity Command Execution on Load:</b>
+   The core of the script is the command executed when the module is loaded. It runs the Singularity container (`ImageSmith_v1.0.sif`) with the `singularity run --cleanenv` command, which strips the environment variables to avoid conflicts.
+</p>
+```lua
+execute{cmd="singularity run -B /projects,/local --cleanenv ".. base.. "/ImageSmith_v".. version ..".sif",modeA={"load"}}
+```
+<p style="text-indent: -1em; padding-left: 2em;">
+   <b>--cleanenv</b>: Ensures that the environment variables are cleaned up, avoiding potential conflicts with the host environment. 
+</p>
+<p style="text-indent: -1em; padding-left: 2em;">
+   <b>-B /projects,/local</b> does mount two folders from the external environment (COSMOS) into the image (/projects  and /local)
+</p>
+<p  style="padding-left: 1em;">
    The `modeA={"load"}` ensures this command is executed only when the module is loaded.
+</p>
 
-4. **Unloading Section (Commented Out):**
-   There is a section intended for handling the unload process when the module is unloaded, but it is currently commented out:
-   ```-- execute{cmd="exit",modeA={"load"}}```
-   This could be used for actions such as cleaning up the environment. The comment suggests that "conda deactivate" could be run on unload, but this stems from the definition file copied from starting with Lua definition files. It would not make sense in this context.
 
-5. **Whatis Information:**
-   The `whatis` entries define **metadata** for the module, giving details about the module's meta information:
-   ```
-   whatis("Name         : ImageSmith singularity image")
-   whatis("Version      : ImageSmith 1.0")
-   whatis("Category     : Image")
-   whatis("Description  : Singularity image providing Python and R and a jupyter lab as default entry point ")
-   whatis("Installed on : 11/09/2024 ")
-   whatis("Modified on  : --- ")
-   ```
+<p style="text-indent: -1em; padding-left: 1em;">
+4. <b>Whatis Information:</b> The `whatis` entries define **metadata** for the module, giving details about the module's meta information:
+</p>   
+```lua
+whatis("Name         : ImageSmith singularity image")
+whatis("Version      : ImageSmith 1.0")
+whatis("Category     : Image")
+whatis("Description  : Singularity image providing Python and R and a jupyter lab as default entry point ")
+whatis("Installed on : 11/09/2024 ")
+whatis("Modified on  : --- ")
+```
 
-6. **Family Definition:**
-   The `family("images")` line is used to group this module under a "family" of modules called **"images"**. This is part of the environment module system to avoid conflicting module loads, ensuring that users can only load one image from the "images" family at a time:
-   ```family("images")```
-
-7. **(Commented) Module Path Prepending:**
-   This section is commented out, but it seems like it was intended to **dynamically modify the module path** to include an Anaconda environment related to this image:
-   ```--local mroot = os.getenv("MODULEPATH_ROOT")```
-   ```--local mdir = pathJoin(mroot,"Compiler/anaconda",version)```
-   ```--prepend_path("MODULEPATH",mdir)```
+<p style="text-indent: -1em; padding-left: 1em;">
+5. <b>Family Definition:</b> The `family("images")` line is used to group this module under a "family" of modules called **"images"**. This is part of the environment module system to avoid conflicting module loads, ensuring that users can only load one image from the "images" family at a time:
+</p>
+```lua
+family("images")
+```
+<p style="text-indent: -1em; padding-left: 1em;">
+6. <b>(Commented) Module Path Prepending:</b>  This section is commented out, but it seems like it was intended to <b>dynamically modify the module path</b> to include an Anaconda environment related to this image:
+</p>
+```lua
+--local mroot = os.getenv("MODULEPATH_ROOT")
+--local mdir = pathJoin(mroot,"Compiler/anaconda",version)
+--prepend_path("MODULEPATH",mdir)
+```
+<p style="padding-left: 1em;">
    If activated, this section would prepend a new path to `MODULEPATH`, which is where additional module files (e.g., for compilers or virtual environments) could reside. This part might be useful if you want to modify the user's `$PATH`.
+</p>
 
 ### Summary
 
