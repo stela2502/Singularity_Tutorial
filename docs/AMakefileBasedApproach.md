@@ -154,8 +154,8 @@ git commit -m "Initial commit with project files"
 
 ### Step 7: Link to Your GitHub Repository
 
-We need to later on also upload our data to github. I do prefere the ssh encrypted documentation over the html,
-but this includes more steps so here we focus on the HTML way.
+We need to later on also upload our data to github. 
+I do prefere the ssh encrypted transfere.
 
 Copy the URL of your new GitHub repository (found on the repository page) and link it to your local repository:
 
@@ -283,13 +283,12 @@ Of casue you can also commend out the changes and re-enact the original base var
 ### Deploy on COSMOS-SENS
 
 We have already uploaded the defintion to GitHub.
-Therfore you can easily clone that on your normal desktop, install apptainer there and build and deploy your image from your normal desktop to COSMOS-SENS.
+Therfore you can easily clone that on your normal desktop, install apptainer there and build and deploy your image from your normal desktop to COSMOS-SENS. It is slightly more complicated on a new Mac with an arm64 based main prcessor. These Macs by default build arm64 images wich are binary incompatible with the amd64 system of COSMOS. YOu might be able to circumvent that problem by using e.g. UTM or Multipass - Virtualization tools for Mac, but we can not help you with that. 
 
 If you want to use the image prepared on open COSMOS I recommend you to tar your deploy data structure (all in `~/sens05_share/common/`) and copy that to COSMOS-SENS using e.g. `scp`. You can simply untar that in `/scale/gr01/shared/common/`. But make sure you only copy the module you want.
 
 Please document your images well, upload them to COSMOS-SENS and share them with us. I hope we all can easen our workloads by sharing!
 While you are at it you can check out my SingSingCell/1.6 package that provides a single cell analysis environment with Seurat, scanpy, scvelo and other tools installed ([on github](https://github.com/stela2502/singularityImages) this is pre ImageSmith). 
-
 
 Please remove your `~/sens05_shared` folder once you are finished - you have saved all your work on github already.
 

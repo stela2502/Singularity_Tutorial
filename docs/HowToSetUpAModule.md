@@ -59,7 +59,7 @@ family("images")
 --
 ```
 
-The file on COSMOS looks different TO WHAT? - use the one on COSMOS instead. The difference to the one here is that in the official file the bind path is set up to run on either open COSMOS, COSMOS-SENS or your local development machine without the need to adjust the Apptainer bind setting.
+The file on COSMOS looks different than what is printed here - use the one on COSMOS instead. The difference to the one here is that in the official file the bind path is set up to run on either open COSMOS, COSMOS-SENS or your local development machine without the need to adjust the Apptainer bind setting.
 
 
 ## Explanation of Lua Module Definition
