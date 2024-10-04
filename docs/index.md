@@ -16,6 +16,9 @@ Containers encapsulate software environments, including libraries, dependencies,
 
 ***Although Apptainer is available for all major operating systems, the installation process on Windows and Mac is not as straightforward as on a pure Linux system***. Therefore, we will run this course using an Apptainer image. This image can be installed on any system that supports Apptainer and allows you to build an image as a regular user - even in an HPC environment. ***In essence, we are going to use an image to make an image***.
 
+
+***Apptainer Images are Processor Architecture specific.*** Apples new M chips are arm64 based and therefore images build on Mac's are also arm64 based. This makes them incompatible with COSMOS which is amd64 based. Sorry.
+
 ## Building Apptainer images on your developmental machine
 
 Building an Apptainer image from start to finish can be summarized in three main steps:

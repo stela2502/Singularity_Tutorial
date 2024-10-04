@@ -11,7 +11,7 @@ The `Makefile` is the main interaction point while building the new image, where
 
 ## What is a Makefile?
 
-A Makefile is a special file used by the ``make`` utility to automate the building and management of software projects. It defines a set of rules and dependencies for compiling code, linking files, and generating executables or other targets. Makefiles consist of targets, dependencies, and commands that describe how to build each part of the project. Typically, they are used in environments with many files, like C/C++ projects, where manual compilation would be cumbersome. We do not need to dive into the depth of that - just the targets will be used for the automatisation. I will not go into more detail later.
+A Makefile is a special file used by the ``make`` utility to automate the building and management of software projects. It defines a set of rules and dependencies for compiling code, linking files, and generating executables or other targets. Makefiles consist of targets, dependencies, and commands that describe how to build each part of the project. Typically, they are used in environments with many files, like C/C++ projects, where manual compilation would be cumbersome. We do not need to dive into the depth of that - just the targets will be used for the automatisation. That is about all you need to know here.
 
 ## Quickly create an Apptainer image from a Blueprint
 
@@ -37,7 +37,7 @@ The Makefile is the central organizer of this whole package. The ``generate_modu
    3. ``build``:
     This target builds the final Singularity image ``$(IMAGE_NAME)`` from the sandbox. The image is based on the sandbox. This is in theory not necessary if you update your definition file. I recommend to add all changes you apply to the sandbox to the definition file, too! But I do not always adhere to that philosophy.
         Key command: ``sudo apptainer build $(IMAGE_NAME) $(SANDBOX_DIR)``
-        
+
    4. ``direct``:
     This target skipps the restart and builds the image directly from the defintion file.
         Key command: ``sudo apptainer build $(IMAGE_NAME) $(DEFINITION_FILE)``
@@ -93,7 +93,7 @@ The module has been deployed to your home directory:
 ~/sens05_shared/common/software/<project_name>/1.0/<project_name>.1.0.sif
 ```
 
-The final image anmd the Lua module file have been saved to your home folder, but your definition file is still only in the `$SNIC_TMP`. Instead of copying the definition file to your home folder, I recommend uploading it to Git. This way, you can easily access your work from outside Open COSMOS, too.
+The final image and the Lua module file have been saved to your home folder, but your definition file is still only in the `$SNIC_TMP`. Instead of copying the definition file to your home folder, I recommend uploading it to Git. This way, you can easily access your work from outside Open COSMOS, too.
 
 ## Save Your Work using Git
 
@@ -154,6 +154,9 @@ git commit -m "Initial commit with project files"
 
 ### Step 7: Link to Your GitHub Repository
 
+We need to later on also upload our data to github. I do prefere the ssh encrypted documentation over the html,
+but this includes more steps so here we focus on the HTML way.
+
 Copy the URL of your new GitHub repository (found on the repository page) and link it to your local repository:
 
 ```bash
@@ -163,10 +166,43 @@ git remote add origin <repository_url>
 Replace `<repository_url>` with the actual URL, for example:
 
 ```bash
-git remote add origin https://github.com/username/MyCoolProject.git
+git remote add origin git@github.com:<username>/MyCoolProject.git
 ```
 
-### Step 8: Push Your Changes to GitHub
+## Step 8: Create a local ssh key
+
+You do not need to do this if you already have a ssh key on COSMOS that you can use with Github.
+You can test this using that command:
+
+```bash
+ssh -T git@github.com
+```
+
+If this 
+```bash
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_rsa
+cat ~/.ssh/id_rsa.pub
+```
+
+This will create a new SHH key, redister the key in your open COSMOS account and show your public key in the terminal. Copy it.
+
+Now, go to [GitHub SSH settings](https://github.com/settings/keys), click on **New SSH Key**, and paste your public key.  
+Give it a meaningful title (e.g., "open COSMOS") and click **Add SSH Key**.  
+
+To verify that everything is set up correctly, you can test the SSH connection to GitHub:
+
+```bash
+ssh -T git@github.com
+```
+
+If successful, you should see a message like:  
+```text
+Hi username! You've successfully authenticated, but GitHub does not provide shell access.
+```
+
+### Step 9: Push Your Changes to GitHub
 
 Finally, push your changes to the master branch of your GitHub repository:
 
@@ -176,6 +212,7 @@ git push -u origin main
 ```
 
 Now your project is safely stored in your GitHub repository, and you can access it from anywhere!
+And you have gained one more way to document your new package ;-)
 
 ## Test the module on open COSMOS
 
@@ -191,15 +228,15 @@ $SNIC_TMP/MyCoolProject/shell.sh
 $SNIC_TMP/MyCoolProject/run.sh
 ``` 
 
-You can also test the function of the Lua module on open COSMOS, but for that you need to adjust the path the Lua module expects the image:
+You can also test the function of the Lua module on open COSMOS, but for that you need to adjust the path the Lua module expects the image in:
 
 Open the created Lua file at ``~/sens05_shared/common/modules/<SANDBOX_DIR>/<VERSION>.lua``.
-You need to comment the line using the '--' on the line start:
-```text
+You need to comment the line using the Lua way: '--' on the line start.
+```lua
 -- local base = pathJoin("/scale/gr01/shared/common/software/<SANDBOX_DIR>/<VERSION>")
 ```
 And add these two lines defining the private location as module source path.
-```text
+```lua
 home=os.getenv( "HOME" )
 local base = pathJoin(home,"/sens05_shared/common/software/<SANDBOX_DIR>/<VERSION>")
 ```
@@ -210,13 +247,15 @@ Afterwards you can register your personal modules / software folder pair as modu
 ```bash
 module use ~/sens05_shared/common/modules/
 ```
+
 Now you are set up to run your own module like this:
+
 
 ```bash
 module load <SANDBOX_DIR>/<VERSION>
 ```
 
-Please do not forget to run the image on the compute nodes again:
+But please do not forget to run the image on the compute nodes again:
 ```text
 #!/bin/bash
 #SBATCH --ntasks-per-node 1
@@ -233,10 +272,12 @@ exit 0
 ```
 
 If you have modified the Lua definition file and now want to copy the image to COSMOS-SENS the easiest is to remove the ``~/sens01_shared/common`` folder and re-deploy the module:
+
 ```bash
 rm -Rf ~/sens05_shared/common
 make deploy
-``` 
+```
+
 Of casue you can also commend out the changes and re-enact the original base variable.
 
 ### Deploy on COSMOS-SENS
@@ -245,8 +286,6 @@ We have already uploaded the defintion to GitHub.
 Therfore you can easily clone that on your normal desktop, install apptainer there and build and deploy your image from your normal desktop to COSMOS-SENS.
 
 If you want to use the image prepared on open COSMOS I recommend you to tar your deploy data structure (all in `~/sens05_share/common/`) and copy that to COSMOS-SENS using e.g. `scp`. You can simply untar that in `/scale/gr01/shared/common/`. But make sure you only copy the module you want.
-
-
 
 Please document your images well, upload them to COSMOS-SENS and share them with us. I hope we all can easen our workloads by sharing!
 While you are at it you can check out my SingSingCell/1.6 package that provides a single cell analysis environment with Seurat, scanpy, scvelo and other tools installed ([on github](https://github.com/stela2502/singularityImages) this is pre ImageSmith). 

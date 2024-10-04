@@ -1,6 +1,6 @@
 # How to set up an Apptainer image as a COSMOS module
 
-The module system on COSMOS is used to manage software packages. It allows users to dynamically load and unload specific software environments without affecting the entire system. Modules are defined through `Lua` scripts, which specify environment variables, dependencies, and version control for different software. 
+In COSMOS, the module system is used to manage software packages. It allows users to dynamically load and unload specific software environments without affecting the entire system. Modules are defined through Lua scripts, which specify environment variables, dependencies, and version control for different software. 
 
 A valid way to learn about how to load an image in the slurm/module system is to look at the defintion of a working image, e.g. our ImageSmith/1.0 Lua defintion. First, we need to find where that definition file is stored on the server:
 
@@ -69,7 +69,7 @@ This Lua module definition file provides a wrapper for loading and unloading an 
 ### Breakdown of the Script
 
 <p style="text-indent: -1em; padding-left: 1em;">
-1. <b>Help Message</b>: The help message for this module can be accessed when users load the module. It provides a description of what the Singularity image contains, specifically a Python JupyterLab interface with both Python and R support.
+1. <b>Help Message</b>: The help message for this module can be accessed when users load the module. It provides a description of what the Singularity image contains, specifically a Python JupyterLab interface with both Python and R support. This is by the way wrong ;-)
 </p>
 ```lua
 help([[This module is an example Singularity Image providing  a 'naked' Python Jupyter Lab interface to both Python and R ]])
@@ -224,6 +224,9 @@ You can start your module using the common command
 module load  Singularity_Workshop/1.0
 ```
 
+Please start the images inside the Jupyter environment. We do not want to load them on the frontend!
+
+
 # Module Names are Unique
 
 On COSMOS-SENS we have a common folder where you can 'publish' your modules for all users of COSMOS-SENS's **sens-gr01** group.
@@ -231,4 +234,6 @@ On COSMOS-SENS we have a common folder where you can 'publish' your modules for 
 /scale/gr01/shared/common/modules
 ```
 
-By default all of you can create modules there. But you cannot modify modules of other users. In other words, you will need to rename your module. I have simplified the creation and maintainance of Apptainer modules by transitioning from executing commands in the terminal to using [a Makefile based approach](AMakefileBasedApproach.md).
+By default all of you can create modules there. But you can not modify modules of other users.
+
+In other words, you will need to get unique names for your module. I have simplified the creation and maintainance of Apptainer modules by transitioning from executing commands in the terminal to using [a Makefile based approach](AMakefileBasedApproach.md).
