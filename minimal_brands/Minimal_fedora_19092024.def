@@ -1,0 +1,51 @@
+Bootstrap: docker
+From: fedora:latest
+
+%environment
+    # Set up environment variables at runtime
+    export PATH=/usr/local/bin:$PATH
+    export PYTHONUSERBASE=/usr/local
+    export PYTHONNOUSERSITE=1
+    export PIP_BREAK_SYSTEM_PACKAGES=1   # Allow pip to modify system packages
+
+%post
+    echo "Jupyter does not install correctly here - waste of time."
+    exit 1
+    # Set up environment variables at runtime
+    export PATH=/usr/local/bin:$PATH
+    export PYTHONUSERBASE=/usr/local
+    export PYTHONNOUSERSITE=1
+    export PIP_BREAK_SYSTEM_PACKAGES=1   # Allow pip to modify system packages
+
+    # Update and install dependencies
+    dnf install -y \
+        python3 \
+        python3-pip \
+        python3-devel \
+        @development-tools \
+        libxml2-devel \
+        libX11-devel \
+        bash \
+        openblas-devel \
+        gcc-gfortran \
+        cairo-devel \
+        pango-devel \
+        libtiff-devel \
+        libjpeg-turbo-devel \
+        git \
+        zeromq-devel \
+        R \
+        R-devel \
+        && dnf clean all
+
+    # Install JupyterLab
+    pip3 install --upgrade pip
+    pip3 install jupyter jupyterlab
+
+    # Install R packages
+    R -e "install.packages('IRkernel', repos='https://cloud.r-project.org')"
+    R -e "install.packages('pbdZMQ', repos='https://cloud.r-project.org')"
+#    R -e "IRkernel::installspec(user = FALSE)"  # Register IRkernel with Jupyter
+
+%runscript
+    exec jupyter lab --no-browser --ip=0.0.0.0 --allow-root

@@ -1,0 +1,12 @@
+Bootstrap: docker
+From: alpine:latest
+
+%environment
+    # Set up environment variables
+    export PATH=/usr/local/bin:$PATH
+    export PYTHONUSERBASE=/usr/local
+    export PYTHONNOUSERSITE=1
+    export PIP_BREAK_SYSTEM_PACKAGES=1   # Allow pip to modify system packages
+
+%post
+

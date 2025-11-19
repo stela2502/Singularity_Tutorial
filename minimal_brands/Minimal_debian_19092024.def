@@ -1,0 +1,50 @@
+Bootstrap: docker
+From: debian:latest
+
+%environment
+    # Set up environment variables at runtime
+    export PATH=/usr/local/bin:$PATH
+    export PYTHONUSERBASE=/usr/local
+    export PYTHONNOUSERSITE=1
+    export PIP_BREAK_SYSTEM_PACKAGES=1   # Allow pip to modify system packages
+
+%post
+    # Set up environment variables at runtime
+    export PATH=/usr/local/bin:$PATH
+    export PYTHONUSERBASE=/usr/local
+    export PYTHONNOUSERSITE=1
+    export PIP_BREAK_SYSTEM_PACKAGES=1   # Allow pip to modify system packages
+
+    # Update and install dependencies
+    apt-get update && apt-get install -y --no-install-recommends \
+        python3 \
+        python3-pip \
+        python3-dev \
+        build-essential \
+        libxml2-dev \
+        libxt-dev \
+        bash \
+        libopenblas-dev \
+        gfortran \
+        libcairo2-dev \
+        libpango1.0-dev \
+        libtiff-dev \
+        libjpeg-dev \
+        git \
+        libzmq3-dev \
+        r-base \
+        r-base-dev
+
+     rm -rf /var/lib/apt/lists/*
+
+    # Install JupyterLab
+    pip3 install --upgrade pip
+    pip3 install jupyterlab
+
+    # Install R packages
+    R -e "install.packages('IRkernel', repos='https://cloud.r-project.org')"
+    R -e "install.packages('pbdZMQ', repos='https://cloud.r-project.org')"  # Install pbdZMQ
+    R -e "IRkernel::installspec(user = FALSE)"  # Register IRkernel with Jupyter
+
+%runscript
+    exec jupyter lab --no-browser --ip=0.0.0.0 --allow-root
