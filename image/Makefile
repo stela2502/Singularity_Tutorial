@@ -19,6 +19,15 @@ SERVER_DIR := /scale/gr01/shared/common/software/$(SANDBOX_DIR)/$(VERSION)
 all: clean restart build deploy
 
 # Restart the sandbox - creates or updates the sandbox
+min_restart:
+	echo "Restarting a minimal image"
+	@if [ -d $(SANDBOX_DIR) ]; then \
+		echo "Please remove/move the existing sandbox $(SANDBOX_DIR)"; \
+	else
+		echo "Creating new sandbox..."; \
+		sudo apptainer build --sandbox Minimal.def $(DEFINITION_FILE); \
+	fi
+
 restart:
 	@echo "Restarting sandbox..."
 	@if [ -d $(SANDBOX_DIR) ]; then \

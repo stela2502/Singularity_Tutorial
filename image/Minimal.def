@@ -1,0 +1,34 @@
+Bootstrap: docker
+From: ubuntu:latest
+
+%labels
+    Description "Ubuntu-based Apptainer image providing a jupyter server entry point"
+    Version "1.0"
+
+%post
+    DEBIAN_FRONTEND=noninteractive
+    set +e  # Let commands fail without stopping the whole build
+
+    LOG_ERR="/var/tmp/install_errors.log"
+    LOG_CMD="/var/tmp/failed_cmds.log"
+    touch "$LOG_ERR" "$LOG_CMD"
+
+    run_logged() {
+        #echo "Running: $*"  # optional: shows what is happening live
+        eval "$@" 2>>"$LOG_ERR"
+        if [ $? -ne 0 ]; then
+            echo "$@" >> "$LOG_CMD"
+        fi
+    }
+
+    mkdir /data1
+    mkdir /data2
+    mkdir /mnt/sccbioinf
+
+%environment
+    export LC_ALL=C.UTF-8
+    export LANG=C.UTF-8
+    export PYTHONUNBUFFERED=1
+    export PATH=/opt/conda/bin:$PATH
+    export PIP_BREAK_SYSTEM_PACKAGES=1
+

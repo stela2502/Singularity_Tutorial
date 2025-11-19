@@ -1,5 +1,10 @@
 # **Creating an Apptainer Image for Bioinformatics**
 
+## News
+
+The new version 2025/11/19 has switched from creating Alpine based images to Ubuntu based images.
+The old Alpine definition file is still included, but will not be used by default. You need to modify the Makefile if you still want an Alpine based image. 
+
 ## **Introduction to Apptainer**
 
 Apptainer (formerly known as Singularity) is a powerful containerization tool tailored for scientific and high-performance computing (HPC) environments. Unlike other containerization platforms like Docker, Apptainer is designed with security in mind, allowing users to run containers without needing elevated privileges. This makes it an excellent choice for bioinformaticians working on shared or secure systems.
