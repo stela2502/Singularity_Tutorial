@@ -64,8 +64,22 @@ if bind_paths ~= "" then
     bind_paths = "-B "..bind_paths
 end
 
--- this happens at load
+
+-- this happens at load choose which option you want!!!
+
+-- #1 start the image with run (e.g. a server in the image)
 execute{cmd="singularity run "..bind_paths.." ".. base.. "/${IMAGE_NAME}_v".. version ..".sif",modeA={"load"}}
+
+-- #2 different option - set a cmd that exec's
+
+local exec_prefix = "singularity run "..bind_paths.." ".. base.. "/${IMAGE_NAME}_v".. version ..".sif "
+
+set_shell_function(
+    "tremolo_img",
+    exec_prefix .. "\$@",
+    exec_prefix .. "\$*"
+)
+
 
 
 -- this happens at unload
