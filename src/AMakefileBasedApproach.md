@@ -58,13 +58,43 @@ You need to modify the `generate_module.sh` script if you want the module to do 
 Lastly, you can modify the definition file to adjust your Apptainer image to your needs. You are free to build whichever image you want.
 
 
-## Building Images on Open COSMOS Needs Storage Space
+## ⚠️ Building Images on Open COSMOS Requires Storage
 
-Especially when you build images using a sandbox, the free storage on COSMOS runs out quickly.
+Building Singularity/Apptainer images on **COSMOS** is possible, but comes with a major constraint:
 
-But as you run the ImageSmith module on the compute nodes, you have access to the `$SNIC_TMP` folder. This folder is a large temporary directory that gets scrubbed after your process on the compute nodes is finished.
+> **You need sufficient local scratch space.**
 
-You can create your new project like this:
+During builds, Apptainer creates large temporary files. On COSMOS, this can easily exceed:
+
+- `$HOME` quota ❌ (too small)
+- shared project space ⚠️ (slow / not ideal)
+
+---
+
+### Recommended Approach
+
+**If you have root access to any Unix system:**
+
+> 👉 **Build your images there instead.**
+
+Then transfer the final `.sif` file to COSMOS.
+
+This is:
+- faster
+- more reliable
+- avoids quota issues
+
+---
+
+### If You Must Build on COSMOS
+
+You are contrained to building alpine based images!
+
+**About the storage problem:**
+
+As you run the ImageSmith module on the compute nodes, you have access to the `$SNIC_TMP` folder. This folder is a large temporary directory that gets scrubbed after your process on the compute nodes is finished.
+
+After connecting to your ImageSmith you can create your new project like this:
 
 ```bash
 create_new_image_builder.sh $SNIC_TMP/MyCoolProject
