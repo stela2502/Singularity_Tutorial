@@ -10,9 +10,9 @@ a consistent structure.
 
 ## 📖 Documentation
 
-The full documentation is built using **mdBook** and automatically deployed via GitHub Actions:
+The full documentation how to use this can be found here:
 
-👉 https://stela2502.github.io/Singularity_Tutorial/
+👉 https://stela2502.github.io/Singularity_Tutorial/site/AMakefileBasedApproach.html
 
 ---
 
@@ -106,7 +106,7 @@ create_new_image_builder.sh <name>
 You are expected to:
 
 1. Edit the generated `.def` file
-2. Adjust the `Makefile` if needed
+2. Adjust the `Makefile` and there especially DEPLOY_DIR and MODULE_FILE
 
 That’s it.
 
