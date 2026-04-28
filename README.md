@@ -12,7 +12,12 @@ a consistent structure.
 
 The full documentation how to use this can be found here:
 
-👉 https://stela2502.github.io/Singularity_Tutorial/site/AMakefileBasedApproach.html
+👉 https://stela2502.github.io/Singularity_Tutorial/AMakefileBasedApproach.html
+
+For a more general introduction into apptainer and it's usage on HPC systems:
+
+👉 https://stela2502.github.io/Singularity_Tutorial/index.html
+
 
 ---
 
